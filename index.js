@@ -17,6 +17,7 @@ module.exports = function (sails) {
     initialize: function(cb) {
       console.log('sails-hook-cms:initialize');
       jadeLocals.sails = sails;
+      
       jadeLocals.helpers = jadeHelpers(sails);
       jadeLocals._ = _;
       //This adds the validation function cms as [model].type = cms = function(){}

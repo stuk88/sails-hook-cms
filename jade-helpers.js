@@ -14,13 +14,16 @@ module.exports = function(sails) {
       return {value:item, name:item};
     });
   };
+  var getModelName = function(item, config) {
+      if(typeof item.name == "function") // support for model instance functions
+        return item.name();
+
+     return (config && config.title) ? item[config.title] : item.name;
+  }
+
   var modelsAsOptions = function (models, config) {
     return _.map(models, function (item){
-      var name = (config && config.title) ? item[config.title] : item.name;
-
-      if(typeof name == "function") // support for model instance functions
-        name = name();
-
+      var name = getModelName(item, config);
       return {value:item.id, name:name};
     });
   };
@@ -34,7 +37,7 @@ module.exports = function(sails) {
           return moment(value).format('DD/MM/YYYY');
         } else if(attrs.collection){
         } else if(attrs.model){
-          return (value && value.name) ? value.name : '';
+          return (value && value.name) ? getModelName(value, sails.models[attrs.collection].cms) : '';
         } else if(attrs.collection){
           return (value.length) ? value.length : 0;
         } else {

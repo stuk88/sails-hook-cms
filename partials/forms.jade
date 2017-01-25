@@ -14,7 +14,7 @@ mixin input(name, attr, type, value)
 mixin select(name, attr, options, value)
   fieldset.form-group
     label.capitalize(for='#{name}') #{name}
-    select.form-control(name="#{name}")
+    select.selectize_select(name="#{name}")
       option(value="") Select one
       each item, index in options
         option(value="#{item.value}", selected=(item.value === value) ? "selected" : undefined) #{item.name}

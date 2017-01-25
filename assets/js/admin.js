@@ -10,4 +10,6 @@ $(document).ready(function(){
         });
     })
 
+    $('.selectize_select').selectize();
+
 });
