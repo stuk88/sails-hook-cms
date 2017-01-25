@@ -21,6 +21,7 @@ module.exports = function (sails) {
       jadeLocals._ = _;
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
+
       for (var key in sails.models) {
         if (sails.models.hasOwnProperty(key)) {
           if(!sails.models[key].types) sails.models[key].types = {};
@@ -29,7 +30,14 @@ module.exports = function (sails) {
           };
         }
       }
-      return cb();
+
+        require('./lib/bindAssets')(sails, function(err, result) {
+            if (err) {
+                sails.log.error(err);
+                return cb(err);
+            }
+            cb();
+        });
     },
     routes: {
       after: {

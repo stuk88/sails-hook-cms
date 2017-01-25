@@ -14,9 +14,14 @@ module.exports = function(sails) {
       return {value:item, name:item};
     });
   };
-  var modelsAsOptions = function (models) {
+  var modelsAsOptions = function (models, config) {
     return _.map(models, function (item){
-      return {value:item.id, name:item.name};
+      var name = (config && config.title) ? item[config.title] : item.name;
+
+      if(typeof name == "function") // support for model instance functions
+        name = name();
+
+      return {value:item.id, name:name};
     });
   };
 
@@ -79,34 +84,62 @@ module.exports = function(sails) {
             value: value
           });
 
-          // If is FLOAT or NUMBER
+            // If is FLOAT or NUMBER
         } else if((attr.type == 'integer' || attr.type == 'float') && !attr.model) {
-          return jadeFormPartials({
-            element: 'input',
-            type: 'number',
-            name: name,
-            attr: attr,
-            value: value
-          });
-
-          // If is a RELATION
-        } else if(attr.model) {
-          var p = Promise.defer();
-          if(sails.models[attr.model]){
-            sails.models[attr.model].find().exec(function(err, models){
-              if(err) return p.resolve('error on model');
-              p.resolve(jadeFormPartials({
-                element: 'select',
+            return jadeFormPartials({
+                element: 'input',
+                type: 'number',
                 name: name,
-                options: modelsAsOptions(models),
+                attr: attr,
                 value: value
-              }));
             });
-          }else {
-            return p.resolve('No model found for ' + attr.model);
-          }
-          return p.promise;
-        }
+
+            // If is json
+        } else if(attr.type == 'json') {
+            return jadeFormPartials({
+                element: 'textarea',
+                name: name,
+                attr: attr,
+                value: value
+            });
+
+            // If is a RELATION
+        } else if(attr.model) {
+            var p = Promise.defer();
+            if(sails.models[attr.model]){
+                sails.models[attr.model].find().exec(function(err, models){
+                    if(err) return p.resolve('error on model');
+                    p.resolve(jadeFormPartials({
+                        element: 'select',
+                        name: name,
+                        options: modelsAsOptions(models, sails.models[attr.model].cms),
+                        value: value
+                    }));
+                });
+            }else {
+                return p.resolve('No model found for ' + attr.model);
+            }
+            return p.promise;
+
+            // If is a RELATION of many
+            } else if(attr.collection) {
+                var p = Promise.defer();
+                if(sails.models[attr.collection]){
+                  console.log(JSON.stringify(value));
+                    sails.models[attr.collection].find().exec(function(err, models){
+                        if(err) return p.resolve('error on model');
+                        p.resolve(jadeFormPartials({
+                            element: 'combo',
+                            name: name,
+                            options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms)),
+                            value: value
+                        }));
+                    });
+                }else {
+                    return p.resolve('No model found for ' + attr.collection);
+                }
+                return p.promise;
+            }
       }
     }
   };

@@ -1,21 +1,23 @@
 {
-  "name": "sails-hook-cms",
-  "version": "0.0.11",
+  "name": "ecobill-hook-cms",
+  "version": "0.0.12",
   "description": "A simple sails admin panel",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec"
   },
-  "author": "Juan P Solano <juanpa_solano@hotmail.com> (http://juanpasolano.com)",
+  "author": "Stas Arshanski <stas@eco-bill.com>",
   "license": "MIT",
   "sails": {
     "isHook": true
   },
   "dependencies": {
+    "fs-extra": "^2.0.0",
     "jade": "^1.11.0",
     "jade-async": "^1.1.7",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
+    "ncp": "^2.0.0",
     "q": "^1.4.1"
   },
   "devDependencies": {
@@ -24,15 +26,7 @@
   "directories": {
     "test": "test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/juanpasolano/sails-hook-cms.git"
-  },
   "keywords": [
     "sails"
-  ],
-  "bugs": {
-    "url": "https://github.com/juanpasolano/sails-hook-cms/issues"
-  },
-  "homepage": "https://github.com/juanpasolano/sails-hook-cms#readme"
+  ]
 }

@@ -32,7 +32,7 @@ mixin datetime(name, attr, value)
       input.form-control(type='text', date-time-picker="", name="#{name}")
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
-          
+
 mixin date(name, attr, value)
   .form-group
     label #{name}
@@ -40,7 +40,19 @@ mixin date(name, attr, value)
       input.form-control(type='text', date-time="", name="#{name}")
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
-    
+
+
+mixin textarea(name, attr, value)
+  fieldset.form-group
+    label.capitalize(for='#{name}') #{name}
+      textarea.form-control( name="#{name}", required=(attr.required ? "required" : undefined))
+        =(value ? value : '')
+
+mixin combo(name, attr, options, value)
+    fieldset.form-group
+        label.capitalize(for="#{name}") #{name}
+          input.selectize(name="#{name}", data-options="#{options}", value="#{value}", multiple)
+
 case element
   when 'input'
     +input(name, attr, type, value)
@@ -52,3 +64,8 @@ case element
     +select(name, attr, options, value)
   when 'checkbox'
     +checkbox(name, attr, value)
+  when 'textarea'
+    +textarea(name, attr, value)
+  when 'combo'
+      +combo(name, attr, options, value)
+
