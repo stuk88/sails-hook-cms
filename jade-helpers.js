@@ -36,8 +36,9 @@ module.exports = function(sails) {
         } else if(attrs.type == 'date'){
           return moment(value).format('DD/MM/YYYY');
         } else if(attrs.collection){
+            return (value && value.name) ? getModelName(value, sails.models[attrs.collection].cms) : '';
         } else if(attrs.model){
-          return (value && value.name) ? getModelName(value, sails.models[attrs.collection].cms) : '';
+          return (value && value.name) ? getModelName(value, sails.models[attrs.model].cms) : '';
         } else if(attrs.collection){
           return (value.length) ? value.length : 0;
         } else {
