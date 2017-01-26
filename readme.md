@@ -8,7 +8,7 @@ The objective of this sails hook is to provide an easy way to create a simple CM
 The hook reads the models schema to build simple CRUD operations and UI CMS.
 
 ## Installation
-Install using `npm i sails-hook-cms` and then navigate to `http://localhost:1337/admin`
+Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
 
 ## Routes
 This hooks introduces a couple of routes to your application.
@@ -43,7 +43,10 @@ module.exports = {
   //Setting this variable will tell the gook how to render
   cms: {
     //You can override the model name with label
-    label: "Libro", 
+    label: "Libro",
+    // what is the field to use as the item title, in relation fields.
+    // Default title field is 'name'
+    title: "name",
     
     //Sometimes you dont want to put your createdAt and updatedAt
     //so we toggle them in the list view
@@ -52,6 +55,7 @@ module.exports = {
     id:true
   },
   attributes: {
+    // Name attribute could be a instance function too.
     name: 'string',
     description: 'text',
     danum: 'integer',
@@ -65,5 +69,4 @@ module.exports = {
 };
 ```
 ## Intentions
-I would like to have a minimal API but still have a decent flexibility.  
-Any suggestions are welcome on the [issues](https://github.com/juanpasolano/sails-hook-cms/issues) page or in the [gitter chat room](https://gitter.im/juanpasolano/sails-hook-cms). 
+I would like to have a minimal API but still have a decent flexibility.
