@@ -1,6 +1,5 @@
 # Sails admin panel
 
-[![Join the chat at https://gitter.im/juanpasolano/sails-hook-cms](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/juanpasolano/sails-hook-cms?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 >Beaware: This hook is still in a very early stage and not in a very active development.
 
 ## Why
@@ -20,7 +19,21 @@ This hooks introduces a couple of routes to your application.
 
 ## Options
 I want this hook to work as plug and play. However if you want more control over the CMS I want to be able to provide those configurations to set things up.
-I decided not to make a `config/cms.js` file yet since I think the model declaration could serve better for grain control configuraitons.
+The base config file should be in `config/misc.js` and contains:
+```
+module.exports = {
+  cms: {
+
+    title: 'App Name', // The name of the app that appears on the logo as alt
+    logo_url: '/images/logo.svg',
+    styles: [
+      // the styles to load in the admin, allows to attach custom styles and redesign the cms as you like
+      '/styles/admin.css'
+    ]
+  }
+}
+
+```
 
 Having for example a model Book. We can start to modify how its `/admin/:model` list view renders.
 In this case we have overrided the model.name with a label *Libro* and removed the createdAt and updatedAt fields.
