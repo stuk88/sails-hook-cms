@@ -16,22 +16,22 @@ block content
       table.table.table-striped.table-hover
         thead.thead-default
           tr
+            th Actions
             each attrs, attrName in modelSchema
               if cms[attrName] != false
                 th.text-capitalize #{attrName}
-            th Actions
         tbody
           if models.length === 0
-            tr 
+            tr
               td.text-center(colspan="100%") There are no entries. <a href="/admin/#{modelName}/create">Add one #{modelName} now.</a>
           each item, indexItem in models
             tr
-              each attrs, attrName in modelSchema
-                if cms && cms[attrName] !== false
-                  td #{helpers.list.item(item[attrName], attrName, attrs)}
-              td(style="width: 145px;")   
+              td(style="width: 145px;")
                 a.btn.btn-primary-outline.btn-sm(href="/admin/#{modelName}/edit/#{item.id}") Edit
                 | &nbsp;
                 a.btn.btn-danger-outline.btn-sm(href="/admin/#{modelName}/delete/#{item.id}",  onclick="return confirm('Are you sure?')") Delete
+              each attrs, attrName in modelSchema
+                if cms && cms[attrName] !== false
+                  td #{helpers.list.item(item[attrName], attrName, attrs)}
     //-.col-md-4
       +model-create-form

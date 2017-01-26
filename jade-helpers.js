@@ -115,6 +115,7 @@ module.exports = function(sails) {
                     if(err) return p.resolve('error on model');
                     p.resolve(jadeFormPartials({
                         element: 'select',
+                        attr: attr,
                         name: name,
                         options: modelsAsOptions(models, sails.models[attr.model].cms),
                         value: value
@@ -134,6 +135,7 @@ module.exports = function(sails) {
                         if(err) return p.resolve('error on model');
                         p.resolve(jadeFormPartials({
                             element: 'combo',
+                            attr: attr,
                             name: name,
                             options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms)),
                             value: value
