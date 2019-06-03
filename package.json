@@ -1,12 +1,12 @@
 {
-  "name": "ecobill-hook-cms",
-  "version": "0.0.15",
+  "name": "sails-hook-cms",
+  "version": "0.0.16",
   "description": "A simple sails admin panel",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec"
   },
-  "author": "Stas Arshanski <stas@eco-bill.com>",
+  "author": "Stas Arshanski <stas.arshanski@gmail.com>",
   "license": "MIT",
   "sails": {
     "isHook": true

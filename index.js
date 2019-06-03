@@ -53,7 +53,7 @@ module.exports = function (sails) {
 
         'GET /admin/:model': function (req, res, next) {
           if(req.params.model && sails.models[req.params.model]){
-            model = sails.models[req.params.model];
+            let model = sails.models[req.params.model];
             var modelSchema = model._attributes;
             //Find all models
             model.find().populateAll().exec(function(err, models){
@@ -105,7 +105,7 @@ module.exports = function (sails) {
 
             //FindOne model
             sails.models[req.params.model]
-            .findOne(req.params.modelId)
+            .findOne({id: req.params.modelId})
             .exec(function(err, model){
               if(err) return res.negotiate(err);
               var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'));
@@ -137,8 +137,8 @@ module.exports = function (sails) {
         'POST /admin/:model/update/:modelId': function(req, res, next){
           console.log(req.body);
           if(req.params.model && sails.models[req.params.model]){
-            req.body = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
-            sails.models[req.params.model].update(req.params.modelId, req.body).exec(function(err, model){
+            let fields = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+            sails.models[req.params.model].update({id: req.params.modelId}, fields).exec(function(err, model){
               if(err) return res.negotiate(err);
               return res.redirect('/admin/' + req.params.model);
             });
@@ -153,7 +153,7 @@ module.exports = function (sails) {
 
             //FindOne model
             sails.models[req.params.model]
-            .destroy(parseInt(req.params.modelId, 10))
+            .destroy({id:req.params.modelId})
             .exec(function(err, model){
               if(err) return res.negotiate(err);
               return res.redirect('/admin/' + req.params.model);
