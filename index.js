@@ -1,44 +1,44 @@
-
-var jade = require('jade');
+var ObjectId  = require('mongodb').ObjectId
+var jade      = require('jade');
 var jadeAsync = require('jade-async');
-var _ = require('lodash');
-var path = require('path');
-var util = require('util');
+var _         = require('lodash');
+var path      = require('path');
+var util      = require('util');
 
 var jadeHelpers = require('./jade-helpers.js');
 
 module.exports = function (sails) {
 
-  var jadeLocals = {};
-  var extendJadeLocals = function (locals){
+  var jadeLocals       = {};
+  var extendJadeLocals = function (locals) {
     return _.assign(jadeLocals, locals);
   };
   return {
-    initialize: function(cb) {
+    initialize: function (cb) {
       console.log('sails-hook-cms:initialize');
       jadeLocals.sails = sails;
-      
+
       jadeLocals.helpers = jadeHelpers(sails);
-      jadeLocals._ = _;
+      jadeLocals._       = _;
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
 
       for (var key in sails.models) {
         if (sails.models.hasOwnProperty(key)) {
-          if(!sails.models[key].types) sails.models[key].types = {};
-          sails.models[key].types.cms= function(){
+          if (!sails.models[key].types) sails.models[key].types = {};
+          sails.models[key].types.cms = function () {
             return true;
           };
         }
       }
 
-        require('./lib/bindAssets')(sails, function(err, result) {
-            if (err) {
-                sails.log.error(err);
-                return cb(err);
-            }
-            cb();
-        });
+      require('./lib/bindAssets')(sails, function (err, result) {
+        if (err) {
+          sails.log.error(err);
+          return cb(err);
+        }
+        cb();
+      });
     },
     routes: {
       after: {
@@ -46,27 +46,33 @@ module.exports = function (sails) {
 
         'GET /admin': function (req, res, next) {
           var jadeFn = jade.compileFile(path.join(__dirname, 'views/home.jade'));
-          var html = jadeFn(extendJadeLocals({}));
+          var html   = jadeFn(extendJadeLocals({}));
           return res.send(html);
         },
 
 
         'GET /admin/:model': function (req, res, next) {
-          if(req.params.model && sails.models[req.params.model]){
-            let model = sails.models[req.params.model];
+          if (req.params.model && sails.models[req.params.model]) {
+            let model       = sails.models[req.params.model];
             var modelSchema = model._attributes;
+            //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
-            model.find().populateAll().exec(function(err, models){
-              if(err) return res.negotiate(err);
-              var jadeFn = jade.compileFile(path.join(__dirname, 'views/model.index.jade'));
-              var html = jadeFn(extendJadeLocals({
+            let query = model.find({});
+
+            if (req.query.sortBy) {
+              req.query.sortBy.split(",").forEach((sortBy) => query.sort(sortBy))
+            }
+
+            query.then((rows) => {
+              var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.index.jade'));
+              jadeFn(extendJadeLocals({
+                sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
                 modelSchema: modelSchema,
                 cms: model.cms || {},
-                models: models
-              }));
-              return res.ok(html);
-            });
+                models: rows
+              })).done(res.ok);
+            }).catch(res.negotiate);
 
           } else {
             return next();
@@ -74,8 +80,8 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin/:model/create': function(req, res, next){
-          if(req.params.model && sails.models[req.params.model]){
+        'GET /admin/:model/create': function (req, res, next) {
+          if (req.params.model && sails.models[req.params.model]) {
 
             var modelSchema = _.clone(sails.models[req.params.model]._attributes);
             delete modelSchema.id;
@@ -95,69 +101,92 @@ module.exports = function (sails) {
           }
         },
 
-        'GET /admin/:model/edit/:modelId': function(req, res, next){
-          if(req.params.modelId && req.params.model && sails.models[req.params.model]){
+        'GET /admin/:model/edit/:modelId': function (req, res, next) {
+          if (req.params.modelId && req.params.model && sails.models[req.params.model]) {
 
             var modelSchema = _.clone(sails.models[req.params.model]._attributes);
             delete modelSchema.id;
             delete modelSchema.createdAt;
             delete modelSchema.updatedAt;
 
+            // make function for READONLY attributes
+
             //FindOne model
             sails.models[req.params.model]
             .findOne({id: req.params.modelId})
-            .exec(function(err, model){
-              if(err) return res.negotiate(err);
+            .then(function (model) {
               var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'));
               jadeFn(extendJadeLocals({
                 modelName: req.params.model,
                 modelSchema: modelSchema,
-                model:model
+                model: model
               })).done(function (html) {
                 return res.send(html);
               });
-            });
+            }).catch((err) => res.negotiate(err));
           } else {
             return next();
           }
         },
 
-        'POST /admin/:model/store': function(req, res, next){
-          console.log(req.body);
-          if(req.params.model && sails.models[req.params.model]){
-            req.body = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
-            sails.models[req.params.model].create(req.body).exec(function(err, model){
-              if(err) return res.negotiate(err);
-              return res.redirect('/admin/' + req.params.model);
-            });
+        'POST /admin/:model/store': function (req, res, next) {
+          if (req.params.model && sails.models[req.params.model]) {
+            fields = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+
+            Object.entries(fields).forEach(([key, value]) => {
+              if (sails.models[req.params.model]._attributes[key].type == "objectid")
+                fields[key] = new ObjectId(value);
+            })
+
+            sails.models[req.params.model].create(fields).then(() => res.redirect('/admin/' + req.params.model)).catch(res.negotiate);
           } else {
             return next();
           }
         },
-        'POST /admin/:model/update/:modelId': function(req, res, next){
-          console.log(req.body);
-          if(req.params.model && sails.models[req.params.model]){
+
+        'GET /admin/:model/duplicate/:modelId': function (req, res, next) {
+          if (req.params.model && sails.models[req.params.model]) {
+
+            sails.models[req.params.model].findOne({id: req.params.modelId}).then((found_model) => {
+              found_model = _.pick(found_model, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+              delete found_model.id;
+              return sails.models[req.params.model]
+                    .create(found_model)
+                    .then((created) => {res.redirect('/admin/' + req.params.model + '/edit/' + created.id)});
+              
+            }).catch(res.negotiate);
+          } else {
+            return next();
+          }
+        },
+
+        'POST /admin/:model/update/:modelId': function (req, res, next) {
+          if (req.params.model && sails.models[req.params.model]) {
             let fields = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
-            sails.models[req.params.model].update({id: req.params.modelId}, fields).exec(function(err, model){
-              if(err) return res.negotiate(err);
-              return res.redirect('/admin/' + req.params.model);
-            });
+
+            Object.entries(fields).forEach(([key, value]) => {
+              if (sails.models[req.params.model]._attributes[key].type == "objectid")
+                fields[key] = ObjectId(value);
+            })
+
+
+            sails.models[req.params.model].update({id: req.params.modelId}, fields)
+            .then(() => res.redirect('/admin/' + req.params.model))
+            .catch(res.negotiate);
           } else {
             return next();
           }
         },
 
 
-        'GET /admin/:model/delete/:modelId': function(req, res, next){
-          if(req.params.modelId && req.params.model && sails.models[req.params.model]){
+        'GET /admin/:model/delete/:modelId': function (req, res, next) {
+          if (req.params.modelId && req.params.model && sails.models[req.params.model]) {
 
             //FindOne model
             sails.models[req.params.model]
-            .destroy({id:req.params.modelId})
-            .exec(function(err, model){
-              if(err) return res.negotiate(err);
-              return res.redirect('/admin/' + req.params.model);
-            });
+            .destroy({id: req.params.modelId})
+            .then(() => res.redirect('/admin/' + req.params.model))
+            .catch(res.negotiate);
           } else {
             return next();
           }

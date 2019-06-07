@@ -4,12 +4,15 @@ $(document).ready(function(){
     $('.selectize').each(function(elem) {
 
         $(this).selectize({
-            labelField: 'name',
-            searchField: ['name'],
-            options: JSON.parse($(this).attr("data-options"))
+            labelField: 'title',
+            searchField: ['title'],
+            options: JSON.parse($(this).attr("data-options")),
+            plugins: ['tree']
         });
     })
 
-    $('.selectize_select').selectize();
+    $('.selectize_select').selectize({
+      plugins: ['tree']
+    });
 
 });

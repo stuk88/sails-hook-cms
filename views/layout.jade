@@ -10,6 +10,8 @@ html(lang="en")
     //-bootstrap-datepicker
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css")
 
+    link(rel="stylesheet", href="/admin/css/admin.css?v=0.0.1")
+    link(rel="stylesheet", href="/admin/css/fonts/FontAwesome/css/all.css")
     link(rel="stylesheet", href="/admin/css/selectize.css")
     link(rel="stylesheet", href="/admin/css/selectize.default.css")
 
@@ -27,7 +29,7 @@ html(lang="en")
         .container-fluid
           .navbar-header
             a.navbar-brand(href='/admin')
-              img(alt='#{sails.config.cms.title}', src='#{sails.config.cms.logo_url}')
+              img.logo(alt='#{sails.config.cms.title}', src='#{sails.config.cms.logo_url}')
           #bs-example-navbar-collapse-1
             //-.collapse.navbar-collapse
             ul.nav.navbar-nav
@@ -36,7 +38,7 @@ html(lang="en")
                     li.nav-item
                       - var title = (model.cms && model.cms.label) ? model.cms.label : model.identity;
                       a.nav-link.text-capitalize(href='/admin/#{model.identity}') #{title}
-    .container
+    .container-fluid
       block content
 
     script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js")
@@ -48,6 +50,7 @@ html(lang="en")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js")
 
     script(src="/admin/js/selectize.min.js")
+    script(src="/admin/js/selectize-tree.js")
     script(src="/admin/js/admin.js?v=1")
 
 

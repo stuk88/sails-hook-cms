@@ -21,26 +21,46 @@ module.exports = function(sails) {
      return (config && config.title) ? item[config.title] : item.name;
   }
 
+  var getModelNameById = function (id, modelName, config) {
+    var p = Promise.defer();
+    if(sails.models[modelName]){
+      sails.models[modelName].findOne({id: id}).then(function(model){
+        console.log(model);
+        p.resolve(getModelName(model, config));
+      }).catch(p.resolve);
+    } else {
+      return p.resolve('No model found for ' + attr.model);
+    }
+    return p.promise;
+  }
+
   var modelsAsOptions = function (models, config) {
     return _.map(models, function (item){
-      var name = getModelName(item, config);
-      return {value:item.id, name:name};
+      let row = {value:item.id, name:getModelName(item, config)};
+      if(_.get(item,"parent_id", false))
+        row['parent_id'] = item.parent_id;
+
+      return row;
     });
   };
 
   return {
     list: {
       item: function(value, attrName, attrs){
+        if(!value)
+          return '';
         if(attrs.type == 'datetime' ){
           return moment(value).format('DD/MM/YYYY:hh-mm a');
         } else if(attrs.type == 'date'){
           return moment(value).format('DD/MM/YYYY');
         } else if(attrs.collection){
-            return (value && value.name) ? getModelName(value, sails.models[attrs.collection].cms) : '';
+            return (value && getModelName(value, sails.models[attrs.collection].cms)) ? getModelName(value, sails.models[attrs.collection].cms) : '';
         } else if(attrs.model){
-          return (value && value.name) ? getModelName(value, sails.models[attrs.model].cms) : '';
+          return (value && getModelNameById(value, attrs.model, sails.models[attrs.model].cms)) ? getModelNameById(value, attrs.model, sails.models[attrs.model].cms) : '';
         } else if(attrs.collection){
           return (value.length) ? value.length : 0;
+        } else if(attrs.type == "json"){
+          return (typeof value != "undefined") ? JSON.stringify(value) : '';
         } else {
           return value;
 
@@ -99,20 +119,19 @@ module.exports = function(sails) {
             });
 
             // If is json
-        } else if(attr.type == 'json') {
+        } else if(attr.type == 'json' && !attr.model) {
             return jadeFormPartials({
                 element: 'textarea',
                 name: name,
                 attr: attr,
-                value: value
+                value: JSON.stringify(value, null, 2)
             });
 
             // If is a RELATION
         } else if(attr.model) {
             var p = Promise.defer();
             if(sails.models[attr.model]){
-                sails.models[attr.model].find().exec(function(err, models){
-                    if(err) return p.resolve('error on model');
+                sails.models[attr.model].find().then(function(models){
                     p.resolve(jadeFormPartials({
                         element: 'select',
                         attr: attr,
@@ -120,7 +139,7 @@ module.exports = function(sails) {
                         options: modelsAsOptions(models, sails.models[attr.model].cms),
                         value: value
                     }));
-                });
+                }).catch(p.resolve);
             }else {
                 return p.resolve('No model found for ' + attr.model);
             }

@@ -53,11 +53,15 @@ mixin textarea(name, attr, value)
         =(value ? value : '')
 
 mixin combo(name, attr, options, value)
-    fieldset.form-group
-        label.capitalize(for="#{name}") #{attr.cms && attr.cms.label || name}:
-        input.selectize(name="#{name}", data-options="#{options}", value="#{value}", multiple)
-        a(href='/admin/#{attr.collection}/create',target="_blank")
-          = "New "+name
+  fieldset.form-group
+      label.capitalize(for="#{name}") #{attr.cms && attr.cms.label || name}:
+      input.selectize(name="#{name}", data-options="#{options}", value="#{value}", multiple)
+      a(href='/admin/#{attr.collection}/create',target="_blank")
+        = "New "+name
+
+mixin subFields(name, attr, possible_fields, values)
+  fieldset.form-group
+    label.capitalize(for="#{name}") #{attr.cms && attr.cms.label || name}:
 
 case element
   when 'input'
@@ -73,5 +77,7 @@ case element
   when 'textarea'
     +textarea(name, attr, value)
   when 'combo'
-      +combo(name, attr, options, value)
+    +combo(name, attr, options, value)
+  when 'subFields'
+    +subFields(name, attr, possible_fields, values)
 

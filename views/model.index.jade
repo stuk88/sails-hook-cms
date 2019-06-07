@@ -17,9 +17,19 @@ block content
         thead.thead-default
           tr
             th Actions
-            each attrs, attrName in modelSchema
+            each config, attrName in modelSchema
               if cms[attrName] != false
-                th.text-capitalize #{attrName}
+                th.text-capitalize
+                  - var isSortedByClass = sortBy && sortBy.indexOf(attrName) != -1 ? 'sortedBy' +sortBy.split(attrName).pop() : '';
+                  - var sortByNext =  attrName || null;
+
+                  if sortBy
+                    if sortBy.indexOf(attrName) != -1
+                      - sortByNext = sortBy.indexOf('desc') != -1 ? sortBy.replace(' desc', '') : sortBy +' desc'
+                    else
+                      - sortByNext = attrName
+
+                  a(href="/admin/#{modelName}?sortBy=#{sortByNext}", class="#{isSortedByClass}") #{_.get(config,"cms.label",attrName)}
         tbody
           if models.length === 0
             tr
@@ -28,10 +38,12 @@ block content
             tr
               td(style="width: 145px;")
                 a.btn.btn-primary-outline.btn-sm(href="/admin/#{modelName}/edit/#{item.id}") Edit
-                | &nbsp;
+                  | &nbsp;
+                a.btn.btn-primary-outline.btn-sm(href="/admin/#{modelName}/duplicate/#{item.id}") Duplicate
+                  | &nbsp;
                 a.btn.btn-danger-outline.btn-sm(href="/admin/#{modelName}/delete/#{item.id}",  onclick="return confirm('Are you sure?')") Delete
               each attrs, attrName in modelSchema
                 if cms && cms[attrName] !== false
-                  td #{helpers.list.item(item[attrName], attrName, attrs)}
+                  td !{helpers.list.item(item[attrName], attrName, attrs)}
     //-.col-md-4
       +model-create-form
