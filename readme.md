@@ -1,4 +1,4 @@
-# Sails admin panel
+# Sails 0.12 Admin Panel
 
 >Beaware: This hook is still in a very early stage and not in a very active development.
 
@@ -64,7 +64,13 @@ module.exports = {
     dadatetime: 'datetime',
     dabool: 'boolean',
     darray: 'array',
-    dajson: 'json'
+    dajson: 'json',
+    enum: {
+        type:'string',
+        enum: ['a','b','c']
+    },
+    model: 'categories',
+    collection: 'categories'
   }
 };
 ```
