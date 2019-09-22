@@ -4,6 +4,7 @@ var jadeAsync = require('jade-async');
 var _         = require('lodash');
 var path      = require('path');
 var util      = require('util');
+var md5       = require('md5');
 
 var jadeHelpers = require('./jade-helpers.js');
 
@@ -42,6 +43,27 @@ module.exports = function (sails) {
     },
     routes: {
       after: {
+        'GET /admin/login': function (req, res) {
+          let html = jade.compileFile(path.join(__dirname, 'views/login.jade'))({
+            referer: req.query.referer
+          });
+          res.send(html);
+        },
+        'GET /admin/logout': function (req, res) {
+          delete req.session.userId;
+          res.redirect('/admin');
+        },
+
+        'POST /admin/login': function (req, res, next) {
+          Users.findOne({email: req.body.email, password: md5(req.body.password), role: 'admin'}).then((user) => {
+            if (!user)
+              return res.redirect('/admin');
+
+            req.session.userId = user.id;
+
+            return res.redirect(req.query.referer);
+          })
+        },
 
 
         'GET /admin': function (req, res, next) {
@@ -151,9 +173,11 @@ module.exports = function (sails) {
               found_model = _.pick(found_model, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
               delete found_model.id;
               return sails.models[req.params.model]
-                    .create(found_model)
-                    .then((created) => {res.redirect('/admin/' + req.params.model + '/edit/' + created.id)});
-              
+              .create(found_model)
+              .then((created) => {
+                res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
+              });
+
             }).catch(res.negotiate);
           } else {
             return next();
