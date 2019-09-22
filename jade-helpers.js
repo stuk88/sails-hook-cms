@@ -25,7 +25,6 @@ module.exports = function(sails) {
     var p = Promise.defer();
     if(sails.models[modelName]){
       sails.models[modelName].findOne({id: id}).then(function(model){
-        console.log(model);
         p.resolve(getModelName(model, config));
       }).catch(p.resolve);
     } else {
@@ -34,14 +33,22 @@ module.exports = function(sails) {
     return p.promise;
   }
 
-  var modelsAsOptions = function (models, config) {
-    return _.map(models, function (item){
-      let row = {value:item.id, name:getModelName(item, config)};
+  var modelsAsOptions = function (models, config, attr) {
+    let options = _.map(models, function (item) {
+      let row = {value: item.id, name: getModelName(item, config)};
       if(_.get(item,"parent_id", false))
         row['parent_id'] = item.parent_id;
 
       return row;
     });
+
+    if(!_.get(attr,"notNull", false))
+    {
+        let AttributeName = attr.cms.label || attr.collection || attr.model;
+        options.unshift({value: null, name: 'Without '+ AttributeName })
+    }
+
+    return options;
   };
 
   return {
@@ -136,7 +143,7 @@ module.exports = function(sails) {
                         element: 'select',
                         attr: attr,
                         name: name,
-                        options: modelsAsOptions(models, sails.models[attr.model].cms),
+                        options: modelsAsOptions(models, sails.models[attr.model].cms, attr),
                         value: value
                     }));
                 }).catch(p.resolve);
@@ -149,7 +156,6 @@ module.exports = function(sails) {
             } else if(attr.collection) {
                 var p = Promise.defer();
                 if(sails.models[attr.collection]){
-                  console.log(JSON.stringify(value));
                     sails.models[attr.collection].find().exec(function(err, models){
                         if(err) return p.resolve('error on model');
                         p.resolve(jadeFormPartials({
