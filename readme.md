@@ -1,4 +1,4 @@
-# Sails 0.12 Admin Panel
+# Sails 0.12 Content Management System
 
 >Beaware: This hook is still in a very early stage and not in a very active development.
 
