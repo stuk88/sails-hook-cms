@@ -153,7 +153,7 @@ module.exports = function (sails) {
 
         'POST /admin/:model/store': function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
-            fields = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+            fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
             Object.entries(fields).forEach(([key, value]) => {
               if (sails.models[req.params.model]._attributes[key].type == "objectid")
@@ -186,7 +186,7 @@ module.exports = function (sails) {
 
         'POST /admin/:model/update/:modelId': function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
-            let fields = _.pick(req.body, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+            let fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
             Object.entries(fields).forEach(([key, value]) => {
               if (sails.models[req.params.model]._attributes[key].type == "objectid")
