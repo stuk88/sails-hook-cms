@@ -170,7 +170,7 @@ module.exports = function (sails) {
           if (req.params.model && sails.models[req.params.model]) {
 
             sails.models[req.params.model].findOne({id: req.params.modelId}).then((found_model) => {
-              found_model = _.pick(found_model, _.identity); //Cleans req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+               //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
               delete found_model.id;
               return sails.models[req.params.model]
               .create(found_model)
