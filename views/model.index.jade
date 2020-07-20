@@ -49,7 +49,7 @@ block content
       nav.pages(aria-label="Page navigation")
         ul.pagination
           - for (var i = 1; i<=pageCount;i++)
-            li(class=currentPage == i ? 'disabled' : 'active')
+            li(class=currentPage == i || (!currentPage && i == 1) ? 'disabled' : 'active')
               a.page(class=currentPage == i ? 'current-page' : '', href="#{currentUrl}?page=#{i}#{sortBy ? '&sortBy='+soryBy : ''}")=i
 
     //-.col-md-4
