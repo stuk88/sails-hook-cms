@@ -79,7 +79,7 @@ module.exports = function (sails) {
             var modelSchema = model._attributes;
             //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
-            let query = model.find({}).limit(100);
+            let query = model.find({}, {limit: 100});
 
             if (req.query.sortBy) {
               req.query.sortBy.split(",").forEach((sortBy) => query.sort(sortBy))
