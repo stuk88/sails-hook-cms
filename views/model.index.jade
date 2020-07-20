@@ -45,5 +45,10 @@ block content
               each attrs, attrName in modelSchema
                 if cms && cms[attrName] !== false
                   td !{helpers.list.item(item[attrName], attrName, attrs)}
+    if pageCount > 1
+      .pages
+        - for (var i = 1; i<=pageCount;i++)
+          a.page(class=currentPage == i ? 'current-page' : '', href="#{currentUrl}?sortBy=#{sortBy}&page=#{i}")=i
+
     //-.col-md-4
       +model-create-form

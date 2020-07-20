@@ -73,13 +73,20 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin/:model': function (req, res, next) {
+        'GET /admin/:model': async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
             let model       = sails.models[req.params.model];
             var modelSchema = model._attributes;
             //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
+            let numRecords = await model.count({});
+            let pageCount = numRecords / 100;
             let query = model.find({}, {limit: 100});
+
+            if(req.query.page) {
+              let skipBy = (req.query.page-1) * 100;
+              query.skip(skipBy);
+            }
 
             if (req.query.sortBy) {
               req.query.sortBy.split(",").forEach((sortBy) => query.sort(sortBy))
@@ -88,11 +95,14 @@ module.exports = function (sails) {
             query.then((rows) => {
               var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.index.jade'));
               jadeFn(extendJadeLocals({
+                currentUrl: req.path,
                 sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
                 modelSchema: modelSchema,
                 cms: model.cms || {},
-                models: rows
+                models: rows,
+                pageCount,
+                currentPage: req.query.page
               })).done(res.ok);
             }).catch(res.negotiate);
 
