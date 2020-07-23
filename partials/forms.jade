@@ -5,7 +5,7 @@ mixin input(name, attr, type, value)
     input.form-control(
       type='#{type}', 
       name="#{name}", 
-      value=(value ? value : '')
+      value=(value ? value : (type == 'number' ? '0' : ''))
       required=(attr.required ? "required" : undefined), 
       
       step=(attr.type === 'float'? "any" : undefined)

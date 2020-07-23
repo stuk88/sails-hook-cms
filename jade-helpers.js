@@ -122,7 +122,8 @@ module.exports = function(sails) {
                 type: 'number',
                 name: name,
                 attr: attr,
-                value: value || attr.defaultsTo
+                value: value,
+                defaultsTo: attr.defaultsTo
             });
 
             // If is json
