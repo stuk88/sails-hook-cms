@@ -44,7 +44,7 @@ module.exports = function(sails) {
 
     if(!_.get(attr,"notNull", false))
     {
-        let AttributeName = attr.cms.label || attr.collection || attr.model;
+        let AttributeName = _.get(attr, "cms.label", false) || attr.collection || attr.model;
         options.unshift({value: null, name: 'Without '+ AttributeName })
     }
 

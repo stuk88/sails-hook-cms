@@ -1,7 +1,7 @@
 mixin input(name, attr, type, value)
   - type = type || 'text'
   fieldset.form-group
-    label.capitalize(for='#{name}') #{attr.cms && attr.cms.label || name}:
+    label.capitalize(for='#{name}') #{_.get(attr, "cms.label", name)}:
     input.form-control(
       type='#{type}', 
       name="#{name}", 
@@ -13,7 +13,7 @@ mixin input(name, attr, type, value)
       
 mixin select(name, attr, options, value)
   fieldset.form-group
-    label.capitalize(for='#{name}') #{attr.cms && attr.cms.label || name}:
+    label.capitalize(for='#{name}') #{_.get(attr, "cms.label", name)}:
     select.selectize_select(name="#{name}")
       option(value="") Select one
       each item, index in options
@@ -27,11 +27,11 @@ mixin checkbox(name, attr, value)
   .checkbox
     label
       input(type='checkbox', name="#{name}", checked=(value)? "checked" : undefined, value="true")
-      |  #{attr.cms && attr.cms.label || name}
+      |  #{_.get(attr, "cms.label", name)}
       
 mixin datetime(name, attr, value)
   .form-group
-    label #{attr.cms && attr.cms.label || name}:
+    label #{_.get(attr, "cms.label", name)}:
     .input-group.date()
       input.form-control(type='text', date-time-picker="", name="#{name}", value=value)
       span.input-group-addon
@@ -39,7 +39,7 @@ mixin datetime(name, attr, value)
 
 mixin date(name, attr, value)
   .form-group
-    label #{attr.cms && attr.cms.label || name}:
+    label #{_.get(attr, "cms.label", name)}:
     .input-group.date()
       input.form-control(type='text', date-picker="", name="#{name}", value=value)
       span.input-group-addon
@@ -48,20 +48,20 @@ mixin date(name, attr, value)
 
 mixin textarea(name, attr, value)
   fieldset.form-group
-    label.capitalize(for='#{name}') #{attr.cms && attr.cms.label || name}:
+    label.capitalize(for='#{name}') #{_.get(attr, "cms.label", name)}:
       textarea.form-control( name="#{name}", required=(attr.required ? "required" : undefined))
         =(value ? value : '')
 
 mixin combo(name, attr, options, value)
   fieldset.form-group
-      label.capitalize(for="#{name}") #{attr.cms && attr.cms.label || name}:
+      label.capitalize(for="#{name}") #{_.get(attr, "cms.label", name)}:
       input.selectize(name="#{name}", data-options="#{options}", value="#{value}", multiple)
       a(href='/admin/#{attr.collection}/create',target="_blank")
         = "New "+name
 
 mixin subFields(name, attr, possible_fields, values)
   fieldset.form-group
-    label.capitalize(for="#{name}") #{attr.cms && attr.cms.label || name}:
+    label.capitalize(for="#{name}") #{_.get(attr, "cms.label", name)}:
 
 case element
   when 'input'
