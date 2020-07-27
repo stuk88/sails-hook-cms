@@ -5,6 +5,7 @@ var _         = require('lodash');
 var path      = require('path');
 var util      = require('util');
 var md5       = require('md5');
+var moment    = require('moment');
 
 var jadeHelpers = require('./jade-helpers.js');
 
@@ -21,6 +22,7 @@ module.exports = function (sails) {
 
       jadeLocals.helpers = jadeHelpers(sails);
       jadeLocals._       = _;
+      jadeLocals.moment  = moment;
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
 
@@ -201,11 +203,18 @@ module.exports = function (sails) {
             Object.entries(fields).forEach(([key, value]) => {
               if (sails.models[req.params.model]._attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
+
+              if (sails.models[req.params.model]._attributes[key].type == "date")
+                fields[key] = moment(value, "MM-DD-YYYY").toDate();
+
+              if (sails.models[req.params.model]._attributes[key].type == "datetime")
+                fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
+
             })
 
 
             sails.models[req.params.model].update({id: req.params.modelId}, fields)
-            .then(() => res.redirect('/admin/' + req.params.model))
+            .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
             .catch(res.negotiate);
           } else {
             return next();

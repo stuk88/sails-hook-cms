@@ -33,7 +33,7 @@ mixin datetime(name, attr, value)
   .form-group
     label #{attr.cms && attr.cms.label || name}:
     .input-group.date()
-      input.form-control(type='text', date-time-picker="", name="#{name}")
+      input.form-control(type='text', date-time-picker="", name="#{name}", value=value)
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
 
@@ -41,7 +41,7 @@ mixin date(name, attr, value)
   .form-group
     label #{attr.cms && attr.cms.label || name}:
     .input-group.date()
-      input.form-control(type='text', date-time="", name="#{name}")
+      input.form-control(type='text', date-picker="", name="#{name}", value=value)
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
 

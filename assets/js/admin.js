@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    $('[date-time-picker]').datetimepicker({format:'YYYY-MM-DD hh:mm:ss'});
-    $('[date-time]').datetimepicker({format:'YYYY-MM-DD'});
+    $('[date-time-picker]').datetimepicker({format:'MM-DD-YYYY hh:mm'});
+    $('[date-picker]').datetimepicker({format:'MM-DD-YYYY'});
     $('.selectize').each(function(elem) {
 
         $(this).selectize({

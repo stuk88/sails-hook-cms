@@ -99,6 +99,12 @@ module.exports = function(sails) {
 
           //if is DATE or DATETIME
         } else if(attr.type == 'date' || attr.type == 'datetime') {
+
+          if(attr.type == 'date')
+            value = moment(value).format("MM-DD-YYYY");
+          else
+            value = moment(value).format("MM-DD-YYYY hh:mm");
+
           return jadeFormPartials({
             element: attr.type,
             name: name,
