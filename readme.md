@@ -65,8 +65,8 @@ module.exports = {
 
 ```
 
-Having for example a model Book. We can start to modify how its list view renders.
-In this case we have overrided the model.name with a label *Libro* and removed the createdAt and updatedAt fields.
+Having for example a model named `Book`, But we maybe want to change the way it displays to be `Books`.
+In this case we can override the model.name with a label *Books* and removed the createdAt and updatedAt fields.
 
 ```
 module.exports = {
@@ -74,7 +74,7 @@ module.exports = {
   // CMS Extra config (Optional)
   cms: {
     // You can override the model displayed name with label
-    label: "Libro",
+    label: "Books",
     // This field defines the field to use as the item title, in relation (Assosiation) attributes.
     // Default title field is 'name'
     title: "name",
