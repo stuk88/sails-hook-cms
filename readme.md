@@ -9,8 +9,8 @@ The objective of this sails hook is to provide an easy way to create a simple CM
 The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System.
 
 ## Installation
-* Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
 * Create a Users model with the fields `email`, `password` (md5 based), and `role`
+* Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
 
 ## Routes
 This hooks introduces a couple of routes to your application.
