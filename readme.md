@@ -5,10 +5,14 @@
 >Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
 > Please open an issue and I will try my best to help.
 
+## The Vision
+
+I would like to have a minimal API but still have a decent flexibility.
+
 ## Why
 
-The objective of this sails hook is to provide an easy way to create a simple CMS for your model's collections.  
-The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System.
+The objective of this sails hook is to provide an easy way to create a simple CMS for your current data structure.  
+The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System on top of your current sails project.
 
 ## Installation
 
@@ -109,5 +113,3 @@ module.exports = {
   }
 };
 ```
-## Intentions
-I would like to have a minimal API but still have a decent flexibility.
