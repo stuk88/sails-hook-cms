@@ -1,21 +1,49 @@
 # Sails.JS 0.12 Content Management System
 
->Beaware: This hook is still in a very early stage and not in a very active development.
+>Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
+> Please open an issue and I will try my best to help.
 
 ## Why
 
 The objective of this sails hook is to provide an easy way to create a simple CMS for your model's collections.  
-The hook reads the models schema to build simple CRUD operations and UI CMS.
+The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System.
 
 ## Installation
-Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
+* Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
+* Create a Users model with the fields `email`, `password` (md5 based), and `role`
 
 ## Routes
 This hooks introduces a couple of routes to your application.
-- `http://localhost:1337/admin` or home
+- `http://localhost:1337/admin/login` Admin login page - Based on Users model
+
+```
+{
+'POST /admin/login': function (req, res, next) {
+          Users.findOne({email: req.body.email, password: md5(req.body.password), role: 'admin'}).then((user) => {
+            if (!user)
+              return res.redirect('/admin');
+
+            req.session.userId = user.id;
+
+            return res.redirect(req.query.referer);
+          })
+        }
+}
+```
+The query to verify a user is based on Users model.
+`email`, `password`, and `role` are required fields.
+The password must be encrypted with md5. (for other better encryption request's please open an issue)
+The authorizetion is based on saving the user id in the session.
+- `http://localhost:1337/admin/logout` Logout page
+
+- `http://localhost:1337/admin` Dashboard main page
 - `http://localhost:1337/admin/:model` A list of items
 - `http://localhost:1337/admin/:model/create` The form to create a new item
+- `http://localhost:1337/admin/:model/store` Save the new item
 - `http://localhost:1337/admin/:model/edit/:modelId` The form to edit an item
+- `http://localhost:1337/admin/:model/update/:modelId` Update an item
+- `http://localhost:1337/admin/:model/duplicate/:modelId` Duplicate an item
+- `http://localhost:1337/admin/:model/delete/:modelId` Delete an item
 
 ## Options
 I want this hook to work as plug and play. However if you want more control over the CMS I want to be able to provide those configurations to set things up.
