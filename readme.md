@@ -1,5 +1,7 @@
 # Sails.JS 0.12 Content Management System
 
+[![Join the chat at https://gitter.im/sails-hook-cms/community](https://badges.gitter.im/sails-hook-cms/community.svg)](https://gitter.im/sails-hook-cms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 >Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
 > Please open an issue and I will try my best to help.
 
