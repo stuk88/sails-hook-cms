@@ -9,10 +9,12 @@ The objective of this sails hook is to provide an easy way to create a simple CM
 The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System.
 
 ## Installation
+
 * Create a Users model with the fields `email`, `password` (md5 based), and `role`
 * Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
 
 ## Routes
+
 This hooks introduces a couple of routes to your application.
 - `http://localhost:1337/admin/login` Admin login page - Based on Users model
 
@@ -63,25 +65,27 @@ module.exports = {
 
 ```
 
-Having for example a model Book. We can start to modify how its `/admin/:model` list view renders.
+Having for example a model Book. We can start to modify how its list view renders.
 In this case we have overrided the model.name with a label *Libro* and removed the createdAt and updatedAt fields.
 
 ```
 module.exports = {
-  //Setting this variable will tell the gook how to render
+
+  // CMS Extra config (Optional)
   cms: {
-    //You can override the model name with label
+    // You can override the model displayed name with label
     label: "Libro",
-    // what is the field to use as the item title, in relation fields.
+    // This field defines the field to use as the item title, in relation (Assosiation) attributes.
     // Default title field is 'name'
     title: "name",
     
-    //Sometimes you dont want to put your createdAt and updatedAt
-    //so we toggle them in the list view
+    // Sometimes you dont want to display some attributes
+    // so we can hide them
     createdAt:false, 
     updatedAt:false,
     id:true
   },
+  
   attributes: {
     // Name attribute could be a instance function too.
     name: 'string',
