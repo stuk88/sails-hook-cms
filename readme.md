@@ -80,7 +80,8 @@ module.exports = {
     title: "name",
     
     // Sometimes you dont want to display some attributes
-    // so we can hide them
+    // so we can hide them.
+    // so writing the attribute name, and setting it to false, tell's the CMS to not display the attribute in the table view.
     createdAt:false, 
     updatedAt:false,
     id:true
