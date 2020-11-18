@@ -1,4 +1,4 @@
-# Sails.JS 0.12 Content Management System
+# Content Management System for Sails.JS v0.12 
 
 > Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
 > Please open an issue and I will try my best to help.
