@@ -5,16 +5,18 @@
 
 ## The Vision
 
-I would like to have a minimal API but still have a decent flexibility.
+An out-of-the-box CMS hook, that you can add to your project, and have a decent Dashboard to edit the data safely.
 
-## Why
+## How
 
 The objective of this sails hook is to provide an easy way to create a simple CMS for your current data structure.  
 The hook reads the models schema and builds a simple CRUD operations, and creats a Content Management System on top of your current sails project.
+We did add some extra config options just to make it more personal with what is presented in the dashboard.
+So you can choose logo and title of the Dashboard, and you can choose what fields should be renamed in the view or simply hide them.
 
 ## Installation
 
-* Create a Users model with the fields `email`, `password` (md5 based), and `role`
+* Create a Users model with the fields `email`, `password` (md5 based), and `role`, and add a new user in the DB.
 * Install using `npm i git+https://github.com/stuk88/sails-hook-cms.git` and then navigate to `http://localhost:1337/admin`
 
 ## Routes
