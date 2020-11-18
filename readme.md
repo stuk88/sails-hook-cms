@@ -1,6 +1,6 @@
 # Sails.JS 0.12 Content Management System
 
->Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
+> Beaware: This hook is still in a very early stages. Its working great, but bugs can occur.
 > Please open an issue and I will try my best to help.
 
 ## The Vision
@@ -112,6 +112,9 @@ module.exports = {
 };
 ```
 
+## You can help!
+* We need to transform jade templates into pug or ejs to support auto system updates. (Currently we have some major issues because Jade is DEPRECATED).
+* Add support for sails 1.0 (Add another Schema parser)
+
 ## Support
-You can find me in the chat room:
-[![Join the chat at https://gitter.im/sails-hook-cms/community](https://badges.gitter.im/sails-hook-cms/community.svg)](https://gitter.im/sails-hook-cms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Please open an issue.
