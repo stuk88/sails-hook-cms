@@ -1,7 +1,7 @@
 {
-  "name": "sails-hook-cms",
+  "name": "sails-hook-cms2",
   "version": "0.0.18",
-  "description": "A simple sails admin panel",
+  "description": "A simple sails v0.12 admin panel",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec"
