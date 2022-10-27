@@ -34,6 +34,7 @@ module.exports = function(sails) {
   }
 
   var modelsAsOptions = function (models, config, attr) {
+      console.log("modelsAsOptions was called with these params: ", models, config, attr);
     let options = _.map(models, function (item) {
       let row = {value: item.id, name: getModelName(item, config)};
       if(_.get(item,"parent_id", false))
