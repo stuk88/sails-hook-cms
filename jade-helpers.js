@@ -169,7 +169,7 @@ module.exports = function(sails) {
                             element: 'combo',
                             attr: attr,
                             name: name,
-                            options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms)),
+                            options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms, attr)),
                             value: value
                         }));
                     });
