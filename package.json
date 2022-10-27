@@ -1,5 +1,5 @@
 {
-  "name": "sails-hook-cms2",
+  "name": "sails-hook-cms",
   "version": "0.0.20",
   "description": "A simple sails v0.12 admin panel",
   "main": "index.js",
