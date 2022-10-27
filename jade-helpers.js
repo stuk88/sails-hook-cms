@@ -42,7 +42,7 @@ module.exports = function(sails) {
       return row;
     });
 
-    if(!_.get(attr,"notNull", false))
+    if(!_.isUndefined(attr))
     {
         let AttributeName = _.get(attr, "cms.label", false) || attr.collection || attr.model;
         options.unshift({value: null, name: 'Without '+ AttributeName })
