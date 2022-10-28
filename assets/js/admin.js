@@ -7,12 +7,12 @@ $(document).ready(function(){
             labelField: 'title',
             searchField: ['title'],
             options: JSON.parse($(this).attr("data-options")),
-            plugins: ['tree']
+            // plugins: ['tree']
         });
     })
 
-    $('.selectize_select').selectize({
-      plugins: ['tree']
-    });
+    // $('.selectize_select').selectize({
+    //   plugins: ['tree']
+    // });
 
 });
