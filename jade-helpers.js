@@ -36,7 +36,7 @@ module.exports = function(sails) {
   var modelsAsOptions = function (models, config, attr) {
       console.log("modelsAsOptions was called with these params: ", models, config, attr);
     let options = _.map(models, function (item) {
-      let row = {value: item.id, name: getModelName(item, config)};
+      let row = {value: item.id, title: getModelName(item, config)};
       if(_.get(item,"parent_id", false))
         row['parent_id'] = item.parent_id;
 
@@ -46,7 +46,7 @@ module.exports = function(sails) {
     if(!_.isUndefined(attr))
     {
         let AttributeName = _.get(attr, "cms.label", false) || attr.collection || attr.model;
-        options.unshift({value: null, name: 'Without '+ AttributeName })
+        options.unshift({value: null, title: 'Without '+ AttributeName })
     }
 
     return options;
