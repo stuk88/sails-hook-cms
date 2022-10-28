@@ -23,7 +23,7 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
-    "sails": "^0.12.14"
+    "sails": "^1.5.3"
   },
   "directories": {
     "test": "test"
