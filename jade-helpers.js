@@ -11,7 +11,7 @@ module.exports = function(sails) {
 
   var enumAsOptions = function (values) {
     return _.map(values, function (item){
-      return {value:item, name:item};
+      return {value:item, title:item};
     });
   };
   var getModelName = function(item, config) {

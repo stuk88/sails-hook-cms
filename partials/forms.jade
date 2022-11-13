@@ -3,21 +3,21 @@ mixin input(name, attr, type, value)
   fieldset.form-group
     label.capitalize(for='#{name}') #{_.get(attr, "cms.label", name)}:
     input.form-control(
-      type='#{type}', 
-      name="#{name}", 
+      type='#{type}',
+      name="#{name}",
       value=(value ? value : (type == 'number' ? '0' : ''))
-      required=(attr.required ? "required" : undefined), 
-      
+      required=(attr.required ? "required" : undefined),
+
       step=(attr.type === 'float'? "any" : undefined)
     )
-      
+
 mixin select(name, attr, options, value)
   fieldset.form-group
     label.capitalize(for='#{name}') #{_.get(attr, "cms.label", name)}:
     select.selectize_select(name="#{name}")
       option(value="") Select one
       each item, index in options
-        option(value="#{item.value}", selected=(item.value === value) ? "selected" : undefined) #{item.name}
+        option(value="#{item.value}", selected=(item.value === value) ? "selected" : undefined) #{item.title}
     if attr.model
       a(href='/admin/#{attr.model || name}/create',target="_blank")
         = "New "+ name
@@ -28,7 +28,7 @@ mixin checkbox(name, attr, value)
     label
       input(type='checkbox', name="#{name}", checked=(value)? "checked" : undefined, value="true")
       |  #{_.get(attr, "cms.label", name)}
-      
+
 mixin datetime(name, attr, value)
   .form-group
     label #{_.get(attr, "cms.label", name)}:
