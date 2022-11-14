@@ -33,6 +33,10 @@ module.exports = function(sails) {
     return p.promise;
   }
 
+    var modelsCollectionValues = function (rows) {
+        return rows.map((row) => row.id)
+    }
+
   var modelsAsOptions = function (models, config, attr) {
     let options = _.map(models, function (item) {
       let row = {value: item.id, title: getModelName(item, config)};
@@ -50,10 +54,6 @@ module.exports = function(sails) {
 
     return options;
   };
-
-  var modelsCollectionValues = function (rows, config) {
-      return rows.map((row) => getModelName(row, config))
-  }
 
   return {
     list: {
@@ -174,7 +174,7 @@ module.exports = function(sails) {
                             attr: attr,
                             name: name,
                             options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms, attr)),
-                            value: modelsCollectionValues(value, sails.models[attr.collection].cms)
+                            value: modelsCollectionValues(value)
                         }));
                     });
                 }else {

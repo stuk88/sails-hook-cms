@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('[date-picker]').datetimepicker({format:'MM-DD-YYYY'});
     $('.selectize').each(function(elem) {
 
-        let value = JSON.parse($(this).attr('value'));
+        let value = $(this).attr('value');
 
         let $selectized = $(this).selectize({
             labelField: 'title',
