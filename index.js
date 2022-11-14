@@ -146,10 +146,14 @@ module.exports = function (sails) {
             // make function for READONLY attributes
 
             //FindOne model
-            sails.models[req.params.model]
-            .findOne({id: req.params.modelId})
-            .populate()
-            .then(function (model) {
+            let q = sails.models[req.params.model]
+            .findOne({id: req.params.modelId});
+
+            sails.models[req.params.model].associations.forEach(function (associationInfo) {
+              q.populate(associationInfo.alias);
+            });
+
+            q.then(function (model) {
               var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'));
               jadeFn(extendJadeLocals({
                 modelName: req.params.model,
