@@ -51,6 +51,10 @@ module.exports = function(sails) {
     return options;
   };
 
+  var modelsCollectionValues = function (rows, config) {
+      return rows.map((row) => getModelName(row, config))
+  }
+
   return {
     list: {
       item: function(value, attrName, attrs){
@@ -170,7 +174,7 @@ module.exports = function(sails) {
                             attr: attr,
                             name: name,
                             options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms, attr)),
-                            value: JSON.stringify(modelsAsOptions(value, sails.models[attr.collection].cms, attr))
+                            value: modelsCollectionValues(value, sails.models[attr.collection].cms)
                         }));
                     });
                 }else {
