@@ -204,12 +204,14 @@ module.exports = function (sails) {
               if (sails.models[req.params.model]._attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
 
+              if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key]))
+                fields[key] = [fields[key]];
+
               if (sails.models[req.params.model]._attributes[key].type == "date")
                 fields[key] = moment(value, "MM-DD-YYYY").toDate();
 
               if (sails.models[req.params.model]._attributes[key].type == "datetime")
                 fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
-
             })
 
 
