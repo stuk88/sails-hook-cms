@@ -148,6 +148,7 @@ module.exports = function (sails) {
             //FindOne model
             sails.models[req.params.model]
             .findOne({id: req.params.modelId})
+            .populate()
             .then(function (model) {
               var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'));
               jadeFn(extendJadeLocals({
