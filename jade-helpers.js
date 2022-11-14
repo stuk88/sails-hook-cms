@@ -170,7 +170,7 @@ module.exports = function(sails) {
                             attr: attr,
                             name: name,
                             options: JSON.stringify(modelsAsOptions(models, sails.models[attr.collection].cms, attr)),
-                            value: value
+                            value: JSON.stringify(modelsAsOptions(value, sails.models[attr.collection].cms, attr))
                         }));
                     });
                 }else {
