@@ -204,8 +204,12 @@ module.exports = function (sails) {
               if (sails.models[req.params.model]._attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
 
-              if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key]))
-                fields[key] = [fields[key]];
+              if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key])) {
+                if(sails.config.connections[sails.models[req.params.model].connection].adapter == 'sails-mysql')
+                  fields[key] = fields[key] == "" ? [] : [parseInt(fields[key])];
+                else
+                  fields[key] = [fields[key]];
+              }
 
               if (sails.models[req.params.model]._attributes[key].type == "date")
                 fields[key] = moment(value, "MM-DD-YYYY").toDate();
