@@ -217,7 +217,9 @@ module.exports = function (sails) {
 
             sails.models[req.params.model].update({id: req.params.modelId}, fields)
             .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
-            .catch(res.negotiate);
+            .catch((err) => {
+              res.negotiate(err)
+            });
           } else {
             return next();
           }
