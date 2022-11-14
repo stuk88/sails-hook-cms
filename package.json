@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-cms",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "A simple sails v0.12 admin panel",
   "main": "index.js",
   "scripts": {
