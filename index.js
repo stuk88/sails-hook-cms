@@ -147,7 +147,7 @@ module.exports = function (sails) {
 
             //FindOne model
             let q = sails.models[req.params.model]
-            .findOne({id: req.params.modelId});
+                .findOne({id: req.params.modelId});
 
             sails.models[req.params.model].associations.forEach(function (associationInfo) {
               q.populate(associationInfo.alias);
@@ -187,13 +187,13 @@ module.exports = function (sails) {
           if (req.params.model && sails.models[req.params.model]) {
 
             sails.models[req.params.model].findOne({id: req.params.modelId}).then((found_model) => {
-               //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
+              //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
               delete found_model.id;
               return sails.models[req.params.model]
-              .create(found_model)
-              .then((created) => {
-                res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
-              });
+                  .create(found_model)
+                  .then((created) => {
+                    res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
+                  });
 
             }).catch(res.negotiate);
           } else {
@@ -221,14 +221,16 @@ module.exports = function (sails) {
 
               if (sails.models[req.params.model]._attributes[key].type == "datetime")
                 fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
-            })
 
+              if(key == "password" && fields[key] == "")
+                delete fields[key];
+            });
 
             sails.models[req.params.model].update({id: req.params.modelId}, fields)
-            .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
-            .catch((err) => {
-              res.negotiate(err)
-            });
+                .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
+                .catch((err) => {
+                  res.negotiate(err)
+                });
           } else {
             return next();
           }
@@ -240,9 +242,9 @@ module.exports = function (sails) {
 
             //FindOne model
             sails.models[req.params.model]
-            .destroy({id: req.params.modelId})
-            .then(() => res.redirect('/admin/' + req.params.model))
-            .catch(res.negotiate);
+                .destroy({id: req.params.modelId})
+                .then(() => res.redirect('/admin/' + req.params.model))
+                .catch(res.negotiate);
           } else {
             return next();
           }
