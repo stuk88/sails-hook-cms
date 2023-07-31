@@ -115,8 +115,7 @@ module.exports = {
 ```
 
 ## You can help!
-* We need to transform jade templates into pug or ejs to support auto system updates. (Currently we have some major issues because Jade is DEPRECATED).
-* Add support for sails 1.0 (Add another Schema parser)
+* This hook needs to load the heavy form fields from ajax (model, collection), and generate them server side. That will lower load times for the hook and will allow to use pug with jade-async (Currently we have some major issues because Jade is DEPRECATED).
 
 ## Support
 Please open an issue.
