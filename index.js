@@ -108,7 +108,7 @@ module.exports = function (sails) {
               req.query.sortBy.split(",").forEach((sortBy) => query.sort(sortBy))
             }
 
-            query.then((rows) => {
+            query.populateAll().then((rows) => {
               let render = jade.compileFile(path.join(__dirname, 'views/model.index.jade'))
               let html = render(extendjadeLocals({
                 currentUrl: req.path,
@@ -154,7 +154,7 @@ module.exports = function (sails) {
         },
 
         'GET /admin/:model/edit/:modelId': function (req, res, next) {
-          if (req.params.modelId && req.params.model && sails.models[req.params.model]) {
+          if (req.params.modelId && req.params.modelId != "false" && req.params.model && sails.models[req.params.model]) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
             var modelSchema = _.clone(attributes);
             delete modelSchema.id;
