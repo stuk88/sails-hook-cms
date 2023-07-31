@@ -5,11 +5,11 @@ block content
   .row
     .col-md-6
       - var title = (cms.label) ? cms.label : modelName;
-      h2.text-capitalize #{title} 
+      h2.text-capitalize #{title}
         small #{models.length}
     .col-md-6
       a.btn.btn-primary.pull-right.text-capitalize(href="/admin/#{modelName}/create") Add #{modelName}
-      
+
   hr
   .row
     .col-md-12
@@ -49,8 +49,8 @@ block content
       nav.pages(aria-label="Page navigation")
         ul.pagination
           - for (var i = 1; i<=pageCount;i++)
-            li(class=currentPage == i || (!currentPage && i == 1) ? 'disabled' : 'active')
-              a.page(class=currentPage == i ? 'current-page' : '', href="#{currentUrl}?page=#{i}#{sortBy ? '&sortBy='+soryBy : ''}")=i
+            li(class=(currentPage == i || (!currentPage && i == 1) ? 'disabled' : 'active'))
+              a.page(class=(currentPage == i ? 'current-page' : ''), href="#{currentUrl}?page=#{i}#{sortBy ? '&sortBy='+soryBy : ''}")=i
 
     //-.col-md-4
       +model-create-form
