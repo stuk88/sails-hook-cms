@@ -1,0 +1,177 @@
+mixin input(name, attr, type, value)
+    - type = type || 'text'
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label.capitalize(for=name) #{attr.cms && attr.cms.label || name}#{attr.required ? '*': ''}:
+            - var value = (value && (attr.cms && attr.cms.type !== "password" || !attr.cms) ? value : '')
+            input.form-control(type=type, name=name, value=value, required=(attr.required ? "required" : undefined), disabled=(attr.cms && attr.cms.disabled), step=(attr.type === 'float'? "any" : undefined), id=name)
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin select(name, attr, options, value)
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label.capitalize(for=name) #{attr.cms && attr.cms.label || name}#{attr.required ? '*' : ''}:
+            select.selectize_select(name=name, disabled=(attr.cms && attr.cms.disabled), id=name, data-model-name=(attr && attr.model), data-value=value)
+                option(value="") Select one
+                each item, index in options
+                    - var id = value && value.id || null;
+                    - var selected = (id) ? (item.value === id) : (item.name === value);
+                    option(value=item.value, selected=((selected) ? "selected" : undefined)) #{item.name}
+            if attr.model
+                a(href=`/admin/${attr.model || name}/create`, target="_blank")= "New " + name
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin checkbox(name, attr, value)
+    .panel.panel-default.checkbox.form-group
+        .panel-body
+            label.control-label(for=name)
+                input(type='checkbox', name=name, checked=(value)? "checked" : undefined, value="true", disabled=(attr.cms && attr.cms.disabled), id=name)
+                | #{attr.cms && attr.cms.label || name}#{attr.required ? '*' : ''}
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin datetime(name, attr, value)
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label(for=name) #{attr.cms && attr.cms.label || name}#{attr.required ? '*' : ''}:
+            .input-group.date()
+                input.form-control(type='text', date-time="", name=name, value=value, disabled=(attr.cms && attr.cms.disabled), id=name)
+                span.input-group-addon
+                    span.glyphicon.glyphicon-calendar
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin date(name, attr, value)
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label(for=name) #{attr.cms && attr.cms.label || name}#{attr.required ? '*' : ''}:
+            .input-group.date()
+                input.form-control(type='text', date="", name=name, value=value, disabled=(attr.cms && attr.cms.disabled), id=name)
+                span.input-group-addon
+                    span.glyphicon.glyphicon-calendar
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin textarea(name, attr, value)
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label.capitalize(for=name) #{_.get(attr, "cms.label", name)}#{attr.required ? '*' : ''}:
+                textarea.form-control(name=name, required=(attr.required ? "required" : undefined), placeholder=(attr.default || ''), disabled=(attr.cms && attr.cms.disabled), id=name)
+                    | #{value ? value : ''}
+        if(attr.cms && attr.cms.description)
+            .panel-footer !{attr.cms.description}
+
+mixin combo(name, attr, options, value)
+    - var label = _.get(attr,"cms.label", name)
+    - var model_name = attr && (attr.model || attr.collection || (attr.type === "json" && attr.cms.collection))
+    .panel.panel-default.form-group
+        .panel-body
+            label.control-label.capitalize(for=name) #{_.get(attr,"cms.label", name)}#{attr.required ? '*' : ''}:
+            input.selectize(id=name, name=name, data-options=options, data-data=value, multiple=true, disabled=(attr.cms && attr.cms.disabled))
+            a(href=`/admin/${model_name}/create`, target="_blank")= "New " + label
+    if(attr.cms && attr.cms.description)
+        .panel-footer !{attr.cms.description}
+
+mixin subFields(name, attr, possible_fields, values)
+    fieldset.form-group
+        label.capitalize(for=name) #{_.get(attr, "cms.label", name)}:
+
+mixin repeater_row(parent_field_name, sub_field_name, sub_field, index, value)
+    - var value = value || ''
+    - var name = `${parent_field_name}[${index}][${sub_field_name}]`
+    - sub_field.cms = sub_field.cms || {}
+    - sub_field.cms.label = sub_field_name
+    - var type = sub_field.type
+
+    if type === 'string' || type === "float" || type === "integer"
+        if sub_field.enum
+            +select(name, sub_field, sub_field.options, value)
+        else
+            - var attr_type = (type === "float" || type === "integer") ? 'number' : type
+            - attr_type = (type === "string") ? 'text' : attr_type
+            - attr_type = (sub_field.cms && sub_field.cms.type) ? sub_field.cms.type : attr_type
+            +input(name, sub_field, attr_type, value)
+    if type === 'datetime'
+        +datetime(name, sub_field, value)
+    if type === 'date'
+        +date(name, sub_field, value)
+    if type === 'boolean'
+        +checkbox(name, sub_field, value)
+    if (type === 'json' && !(sub_field.cms && sub_field.cms.collection) && !(sub_field.cms))
+        +textarea(name, sub_field, value)
+    if type === 'text'
+        +textarea(name, sub_field, value)
+    if sub_field.model || sub_field.collection || (type === "json" && sub_field.cms.collection)
+        +combo(name, sub_field, JSON.stringify(sub_field.options), value)
+
+mixin repeater(name, attr, sub_fields, values)
+    .panel.panel-default
+        .panel-heading #{attr.cms && attr.cms.label || name} #{attr.required ? '*' : ''} :
+        .panel-body
+            - var repeater_length = values && values.length || 0
+            table.table.repeater.table-striped.table-hover
+                - var i = 0
+                if values
+                    each row in values
+                        tr
+                            td
+                                each sub_field, sub_field_name in sub_fields
+                                    - var value = row && row[sub_field_name] || null
+                                    +repeater_row(name, sub_field_name, sub_field, i, value)
+                            - i++
+                            td
+                                .btn.btn-danger.remove-row -
+                    tr
+                        td
+                            each sub_field, sub_field_name in sub_fields
+                                +repeater_row(name, sub_field_name, sub_field, i)
+                        - i++
+                        td
+                            .btn.btn-danger.remove-row -
+                else
+                    tr
+                        td
+                            each sub_field, sub_field_name in sub_fields
+                                +repeater_row(name, sub_field_name, sub_field, i)
+                        td
+                            .btn.btn-danger.remove-row -
+        .panel-footer.overflow-hidden
+            .col-xs-1.pull-right
+                .btn.btn-success#add-row(data-last-index=repeater_length) +
+
+mixin dynamic_content(name, attr, value, sub_fields)
+    .panel.panel-default
+        .panel-heading #{attr.cms && attr.cms.label || name} #{attr.required ? '*' : ''} :
+        .panel-body
+            .dynamic_content_field(data-model-attr=JSON.stringify(attr), data-sub-fields=sub_fields, id=name)
+                if sub_fields
+                    - var model = value
+                    each row in sub_fields
+                        - var value = model && model[row.key_id] || null
+                        +input(`${name}[${row.key_id}]`, {cms: {label: row.label}}, "text", value)
+
+
+
+case element
+    when 'input'
+        +input(name, attr, type, value)
+    when 'datetime'
+        +datetime(name, attr, value)
+    when 'date'
+        +date(name, attr, value)
+    when 'select'
+        +select(name, attr, options, value)
+    when 'checkbox'
+        +checkbox(name, attr, value)
+    when 'textarea'
+        +textarea(name, attr, value)
+    when 'combo'
+        +combo(name, attr, options, value)
+    when 'subFields'
+        +subFields(name, attr, possible_fields, values)
+    when 'repeater'
+        +repeater(name, attr, sub_fields, value)
+    when 'dynamic_content'
+        +dynamic_content(name, attr, value, sub_fields)

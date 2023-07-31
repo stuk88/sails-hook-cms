@@ -1,0 +1,56 @@
+extends ./layout.pug
+include ../partials/model.create.pug
+
+block content
+    .row
+        .col-md-6
+            - var title = _.get(attr, "cms.label", modelName);
+            h2.text-capitalize #{title}
+                small #{_.get(models,"length", 0)}
+        .col-md-6
+            a.btn.btn-primary.pull-right.text-capitalize(href=`/admin/${modelName}/create`) Add #{modelName}
+
+    hr
+    .row
+        .col-md-12
+            table.table.table-striped.table-hover
+                thead.thead-default
+                    tr
+                        th Actions
+                        each config, attrName in modelSchema
+                            if cms[attrName] !== false
+                                th.text-capitalize
+                                    - var isSortedByClass = sortBy && sortBy.indexOf(attrName) !== -1 ? `sortedBy${sortBy.split(attrName).pop()}` : '';
+                                    - var sortByNext =  attrName || null;
+
+                                    if (sortBy)
+                                        if (sortBy.indexOf(attrName) !== -1)
+                                            - sortByNext = sortBy.indexOf('desc') !== -1 ? sortBy.replace(' desc', '') : sortBy + ' desc'
+                                        else
+                                            - sortByNext = attrName
+
+                                    a(href=`/admin/${modelName}?sortBy=${sortByNext}`, class=isSortedByClass) #{_.get(config,"cms.label",attrName)}
+                tbody
+                    if (_.get(models,"length", 0) === 0)
+                        tr
+                            td.text-center(colspan="100%") There are no entries. <a href=`/admin/${modelName}/create`>Add one #{modelName} now.</a>
+                    each item, indexItem in models
+                        tr
+                            td(style="width: 145px;")
+                                a.btn.btn-primary-outline.btn-sm(href=`/admin/${modelName}/edit/${item.id}`) Edit
+                                    | &nbsp;
+                                a.btn.btn-primary-outline.btn-sm(href=`/admin/${modelName}/duplicate/${item.id}`) Duplicate
+                                    | &nbsp;
+                                a.btn.btn-danger-outline.btn-sm(href=`/admin/${modelName}/delete/${item.id}`,  onclick="return confirm('Are you sure?')") Delete
+                            each attrs, attrName in modelSchema
+                                if cms && cms[attrName] !== false
+                                    td !{helpers.list.item(item[attrName], attrName, attrs)}
+        if (pageCount > 1)
+            nav.pages(aria-label="Page navigation")
+                ul.pagination
+                    - for (var i = 1; i <= pageCount; i++)
+                    li(class=(currentPage == i || (!currentPage && i == 1) ? 'disabled' : 'active'))
+                        a.page(class=(currentPage == i ? 'current-page' : ''), href=`${currentUrl}?page=${i}${sortBy ? '&sortBy=' + sortBy : ''}`)=i
+
+        //-.col-md-4
+          +model-create-form

@@ -1,0 +1,19 @@
+extends ./layout.pug
+include ../partials/model.create.pug
+
+block content
+    .row
+        .col-md-6
+            h2.text-capitalize Create #{modelName}
+    +model-create-form
+
+
+//-block scripts
+//-  script.
+//-    //- $(document).ready(function() {
+//-    //-   $('form').on('submit', function(e){
+//-    //-     // validation code here
+//-    //-     console.log()
+//-    //-     e.preventDefault();
+//-    //-   });
+//-    //- });

@@ -1,0 +1,15 @@
+extends ./layout.pug
+
+block content
+    .jumbotron
+        .container
+            h1 Wellcome to #{config.title} Dashboard
+            p From here you'll be able to manage the whole information of the app.
+    //-.row
+      .col-md-4
+        h2 models
+        p There are #{Object.keys(sails.models).length} models on your app;
+        p you can chek this running <code>sails.models</code>
+        pre= JSON.stringify(sails.models, null, 2)
+      .col-md-4
+      .col-md-4

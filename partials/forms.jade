@@ -78,8 +78,8 @@ mixin textarea(name, attr, value)
       .panel-footer !{attr.cms.description}
 
 mixin combo(name, attr, options, value)
-  - var label = attr.cms.label || name
-  - var model_name = attr.model || attr.collection || (attr.type == "json" && attr.cms.collection)
+  - var label = _.get(attr,"cms.label", name)
+  - var model_name = attr && (attr.model || attr.collection || (attr.type == "json" && attr.cms.collection))
   .panel.panel-default.form-group
     .panel-body
       label.control-label.capitalize(for=name) #{attr.cms && attr.cms.label || name}#{attr.required ? '*' : ''}:

@@ -12,18 +12,16 @@
     "isHook": true
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
     "fs-extra": "^2.0.0",
     "jade": "^1.11.0",
-    "jade-async": "^1.1.7",
+    "jade-async": "^1.1.8",
     "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "moment": "^2.10.6",
     "mongodb": "^3.2.6",
     "ncp": "^2.0.0",
     "q": "^1.4.1"
-  },
-  "devDependencies": {
-    "sails": "^0.12.14"
   },
   "directories": {
     "test": "test"

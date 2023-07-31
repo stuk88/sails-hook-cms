@@ -3,22 +3,36 @@ var jade      = require('jade');
 var jadeAsync = require('jade-async');
 var _         = require('lodash');
 var path      = require('path');
-var util      = require('util');
 var md5       = require('md5');
 var moment    = require('moment');
+var pkg       = require('./package.json')
 
-var jadeHelpers = require('./jade-helpers.js');
+var jadeHelpers = require('./lib/jade-helpers.js');
 
 module.exports = function (sails) {
 
   var jadeLocals       = {};
-  var extendJadeLocals = function (locals) {
+  var extendjadeLocals = function (locals) {
     return _.assign(jadeLocals, locals);
   };
   return {
     initialize: function (cb) {
       console.log('sails-hook-cms:initialize');
       jadeLocals.sails = sails;
+
+      const defaultConfig = {
+        title: "Sails CMS",
+        logo_url: false,
+        styles: [
+          '/admin/css/admin.css?v='+pkg.version
+        ]
+      }
+
+      jadeLocals.config = {
+        title: _.get(sails,"config.cms.title", defaultConfig.title),
+        logo_url: _.get(sails,"config.cms.logo_url", defaultConfig.logo_url),
+        styles: _.get(sails,"config.cms.styles", defaultConfig.styles),
+      }
 
       jadeLocals.helpers = jadeHelpers(sails);
       jadeLocals._       = _;
@@ -70,7 +84,7 @@ module.exports = function (sails) {
 
         'GET /admin': function (req, res, next) {
           var jadeFn = jade.compileFile(path.join(__dirname, 'views/home.jade'));
-          var html   = jadeFn(extendJadeLocals({}));
+          var html   = jadeFn(extendjadeLocals({}));
           return res.send(html);
         },
 
@@ -78,12 +92,12 @@ module.exports = function (sails) {
         'GET /admin/:model': async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
             let model       = sails.models[req.params.model];
-            var modelSchema = model._attributes;
+            var modelSchema = model._attributes || model.attributes;
             //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
             let numRecords = await model.count({});
             let pageCount = numRecords / 100;
-            let query = model.find({}, {limit: 100});
+            let query = model.find({}).limit(100);
 
             if(req.query.page) {
               let skipBy = (req.query.page-1) * 100;
@@ -95,8 +109,8 @@ module.exports = function (sails) {
             }
 
             query.then((rows) => {
-              var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.index.jade'));
-              jadeFn(extendJadeLocals({
+              let render = jade.compileFile(path.join(__dirname, 'views/model.index.jade'))
+              let html = render(extendjadeLocals({
                 currentUrl: req.path,
                 sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
@@ -105,7 +119,9 @@ module.exports = function (sails) {
                 models: rows,
                 pageCount,
                 currentPage: req.query.page
-              })).done(res.ok);
+              }));
+
+                return res.send(html);
             }).catch(res.negotiate);
 
           } else {
@@ -117,17 +133,19 @@ module.exports = function (sails) {
         'GET /admin/:model/create': function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
 
-            var modelSchema = _.clone(sails.models[req.params.model]._attributes);
+            let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
+
+            var modelSchema = _.clone(attributes);
             delete modelSchema.id;
             delete modelSchema.createdAt;
             delete modelSchema.updatedAt;
 
             //Using the async thing
-            var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.create.jade'));
-            jadeFn(extendJadeLocals({
+            let jadeRender = jadeAsync.compileFile(path.join(__dirname, 'views/model.create.jade'));
+            jadeRender(extendjadeLocals({
               modelName: req.params.model,
               modelSchema: modelSchema
-            })).done(function (html) {
+            })).done(function(html) {
               return res.send(html);
             });
           } else {
@@ -137,8 +155,8 @@ module.exports = function (sails) {
 
         'GET /admin/:model/edit/:modelId': function (req, res, next) {
           if (req.params.modelId && req.params.model && sails.models[req.params.model]) {
-
-            var modelSchema = _.clone(sails.models[req.params.model]._attributes);
+            let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
+            var modelSchema = _.clone(attributes);
             delete modelSchema.id;
             delete modelSchema.createdAt;
             delete modelSchema.updatedAt;
@@ -154,12 +172,11 @@ module.exports = function (sails) {
             });
 
             q.then(function (model) {
-              var jadeFn = jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'));
-              jadeFn(extendJadeLocals({
+              jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'))(extendjadeLocals({
                 modelName: req.params.model,
                 modelSchema: modelSchema,
                 model: model
-              })).done(function (html) {
+              })).done(function(html) {
                 return res.send(html);
               });
             }).catch((err) => res.negotiate(err));
@@ -172,8 +189,10 @@ module.exports = function (sails) {
           if (req.params.model && sails.models[req.params.model]) {
             fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
+            let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
+
             Object.entries(fields).forEach(([key, value]) => {
-              if (sails.models[req.params.model]._attributes[key].type == "objectid")
+              if (attributes[key].type == "objectid")
                 fields[key] = new ObjectId(value);
             })
 
@@ -205,8 +224,10 @@ module.exports = function (sails) {
           if (req.params.model && sails.models[req.params.model]) {
             let fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
+            let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
+
             Object.entries(fields).forEach(([key, value]) => {
-              if (sails.models[req.params.model]._attributes[key].type == "objectid")
+              if (attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
 
               if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key])) {
@@ -216,10 +237,10 @@ module.exports = function (sails) {
                   fields[key] = [fields[key]];
               }
 
-              if (sails.models[req.params.model]._attributes[key].type == "date")
+              if (attributes[key].type == "date")
                 fields[key] = moment(value, "MM-DD-YYYY").toDate();
 
-              if (sails.models[req.params.model]._attributes[key].type == "datetime")
+              if (attributes[key].type == "datetime")
                 fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
 
               if(key == "password" && fields[key] == "")
