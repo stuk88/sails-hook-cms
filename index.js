@@ -111,7 +111,8 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin': function (req, res, next) {          
+        'GET /admin': function (req, res, next) {     
+          console.log(sails.models);     
           return res.send(renderTemplate('home'));
         },
 
