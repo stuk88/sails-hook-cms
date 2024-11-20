@@ -14,6 +14,26 @@ var ejsHelpers = require('./lib/ejs-helpers.js');
 module.exports = function (sails) {
 
   var injectedVars = {};
+  injectedVars.sails = sails;
+
+  const defaultConfig = {
+    title: "Sails CMS",
+    logo_url: false,
+    styles: [
+      '/admin/css/admin.css?v='+pkg.version
+    ],
+    template: 'jade'
+  }
+
+  injectedVars.config = {
+    title: _.get(sails,"config.cms.title", defaultConfig.title),
+    logo_url: _.get(sails,"config.cms.logo_url", defaultConfig.logo_url),
+    styles: _.get(sails,"config.cms.styles", defaultConfig.styles),
+    template: _.get(sails, "config.cms.template", defaultConfig.template)
+  }
+
+  injectedVars._       = _;
+  injectedVars.moment  = moment;
   var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
 
   /**
@@ -45,26 +65,7 @@ module.exports = function (sails) {
   return {
     initialize: function (cb) {
       console.log('sails-hook-cms:initialize');
-      injectedVars.sails = sails;
-
-      const defaultConfig = {
-        title: "Sails CMS",
-        logo_url: false,
-        styles: [
-          '/admin/css/admin.css?v='+pkg.version
-        ],
-        template: 'jade'
-      }
-
-      injectedVars.config = {
-        title: _.get(sails,"config.cms.title", defaultConfig.title),
-        logo_url: _.get(sails,"config.cms.logo_url", defaultConfig.logo_url),
-        styles: _.get(sails,"config.cms.styles", defaultConfig.styles),
-        template: _.get(sails, "config.cms.template", defaultConfig.template)
-      }
-
-      injectedVars._       = _;
-      injectedVars.moment  = moment;
+      
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
 
