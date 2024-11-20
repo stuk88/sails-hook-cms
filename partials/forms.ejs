@@ -1,0 +1,269 @@
+<% function input(name, attr, type, value) { %>
+  <% type = type || 'text'; %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label capitalize" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <% var value = (value && (attr.cms && attr.cms.type != "password" || !attr.cms) ? value : ''); %>
+      <input class="form-control" 
+             type="<%= type %>" 
+             name="<%= name %>" 
+             value="<%= value %>" 
+             required="<%= attr.required ? 'required' : undefined %>" 
+             disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+             step="<%= (attr.type === 'float' ? 'any' : undefined) %>" 
+             id="<%= name %>" />
+    </div>
+    <% if (attr.cms && attr.cms.description) { %>
+      <div class="panel-footer"><%= attr.cms.description %></div>
+    <% } %>
+  </div>
+<% } %>
+
+<% function select(name, attr, options, value) { %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label capitalize" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <select class="selectize_select" name="<%= name %>" 
+              disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+              id="<%= name %>" 
+              data-model-name="<%= (attr && attr.model) %>" 
+              data-value="<%= value %>">
+        <option value="">Select one</option>
+        <% options.forEach(function(item) { %>
+          <% var id = value && value.id || null; %>
+          <% var selected = (id) ? (item.value === id) : (item.name === value); %>
+          <option value="<%= item.value %>" <%= selected ? 'selected' : '' %>><%= item.name %></option>
+        <% }); %>
+      </select>
+      <% if (attr.model) { %>
+        <a href="/admin/<%= (attr.model || name) %>/create" target="_blank">New <%= name %></a>
+      <% } %>
+      <% if (attr.cms && attr.cms.description) { %>
+        <div class="panel-footer"><%= attr.cms.description %></div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<% function checkbox(name, attr, value) { %>
+  <div class="panel panel-default checkbox form-group">
+    <div class="panel-body">
+      <label class="control-label" for="<%= name %>">
+        <input type="checkbox" name="<%= name %>" 
+               <%= value ? 'checked' : '' %> 
+               value="true" 
+               disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+               id="<%= name %>" />
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>
+      </label>
+    </div>
+    <% if (attr.cms && attr.cms.description) { %>
+      <div class="panel-footer"><%= attr.cms.description %></div>
+    <% } %>
+  </div>
+<% } %>
+
+<% function datetime(name, attr, value) { %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <div class="input-group date">
+        <input class="form-control" type="text" date-time="" 
+               name="<%= name %>" 
+               value="<%= value %>" 
+               disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+               id="<%= name %>" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+      <% if (attr.cms && attr.cms.description) { %>
+        <div class="panel-footer"><%= attr.cms.description %></div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<% function date(name, attr, value) { %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <div class="input-group date">
+        <input class="form-control" type="text" date="" 
+               name="<%= name %>" 
+               value="<%= value %>" 
+               disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+               id="<%= name %>" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+      <% if (attr.cms && attr.cms.description) { %>
+        <div class="panel-footer"><%= attr.cms.description %></div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<% function textarea(name, attr, value) { %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label capitalize" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <textarea class="form-control" name="<%= name %>" 
+                required="<%= attr.required ? 'required' : undefined %>" 
+                placeholder="<%= (attr.default || '') %>" 
+                disabled="<%= (attr.cms && attr.cms.disabled) %>" 
+                id="<%= name %>"><%= (value ? value : '') %></textarea>
+      <% if (attr.cms && attr.cms.description) { %>
+        <div class="panel-footer"><%= attr.cms.description %></div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<% function combo(name, attr, options, value) { %>
+  <% var label = (attr.cms && attr.cms.label) || name; %>
+  <% var model_name = attr && (attr.model || attr.collection || (attr.type == "json" && attr.cms.collection)); %>
+  <div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label capitalize" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <input class="selectize" id="<%= name %>" name="<%= name %>" 
+             data-options="<%= options %>" 
+             data-data="<%= value %>" 
+             multiple="true" 
+             disabled="<%= (attr.cms && attr.cms.disabled) %>" />
+      <a href="/admin/<%= model_name %>/create" target="_blank">New <%= label %></a>
+      <% if (attr.cms && attr.cms.description) { %>
+        <div class="panel-footer"><%= attr.cms.description %></div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<% function repeater_row(parent_field_name, sub_field_name, sub_field, index, value) { %>
+  <% var name = parent_field_name + "[" + index + "][" + sub_field_name + "]"; %>
+  <% sub_field.cms = sub_field.cms || {}; %>
+  <% sub_field.cms.label = sub_field_name; %>
+  <% var type = sub_field.type; %>
+
+  <% if (type == 'string' || type == "float" || type == "integer") { %>
+    <% if (sub_field.enum) { %>
+      <%= select(name, sub_field, sub_field.options, value) %>
+    <% } else { %>
+      <% var attr_type = (type == "float" || type == "integer") ? 'number' : type; %>
+      <% attr_type = (type == "string") ? 'text' : attr_type; %>
+      <% attr_type = (sub_field.cms && sub_field.cms.type) ? sub_field.cms.type : attr_type; %>
+      <%= input(name, sub_field, attr_type, value) %>
+    <% } %>
+  <% } else if (type == 'datetime') { %>
+    <%= datetime(name, sub_field, value) %>
+  <% } else if (type == 'date') { %>
+    <%= date(name, sub_field, value) %>
+  <% } else if (type == 'boolean') { %>
+    <%= checkbox(name, sub_field, value) %>
+  <% } else if (type == 'json' && !(sub_field.cms && sub_field.cms.collection) && !(sub_field.cms)) { %>
+    <%= textarea(name, sub_field, value) %>
+  <% } else if (type == 'text') { %>
+    <%= textarea(name, sub_field, value) %>
+  <% } else if (sub_field.model || sub_field.collection || (type == "json" && sub_field.cms.collection)) { %>
+    <%= combo(name, sub_field, JSON.stringify(sub_field.options), value) %>
+  <% } %>
+<% } %>
+
+<% function repeater(name, attr, sub_fields, values) { %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <%= (attr.cms && attr.cms.label) || name %> <%= attr.required ? '*' : '' %> :
+    </div>
+    <div class="panel-body">
+      <% var repeater_length = values && values.length || 0; %>
+      <table class="table repeater table-striped table-hover">
+        <% if (values) { %>
+          <% values.forEach(function(row, i) { %>
+            <tr>
+              <td>
+                <% for (var sub_field_name in sub_fields) { %>
+                  <% var value = row && row[sub_field_name] || null; %>
+                  <%= repeater_row(name, sub_field_name, sub_fields[sub_field_name], i, value) %>
+                <% } %>
+              </td>
+              <td>
+                <button class="btn btn-danger remove-row">-</button>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td>
+              <% for (var sub_field_name in sub_fields) { %>
+                <%= repeater_row(name, sub_field_name, sub_fields[sub_field_name], 0) %>
+              <% } %>
+            </td>
+            <td>
+              <button class="btn btn-danger remove-row">-</button>
+            </td>
+          </tr>
+        <% } %>
+      </table>
+    </div>
+    <div class="panel-footer overflow-hidden">
+      <div class="col-xs-1 pull-right">
+        <button class="btn btn-success" id="add-row" data-last-index="<%= repeater_length %>">+</button>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<% function dynamic_content(name, attr, value, sub_fields) { %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <%= (attr.cms && attr.cms.label) || name %> <%= attr.required ? '*' : '' %> :
+    </div>
+    <div class="panel-body">
+      <div class="dynamic_content_field" data-model-attr="<%= JSON.stringify(attr) %>" data-sub-fields="<%= sub_fields %>" id="<%= name %>">
+        <% if (sub_fields) { %>
+          <% var model = value; %>
+          <% sub_fields.forEach(function(row) { %>
+            <% var value = model && model[row.key_id] || null; %>
+            <%= input(name + "[" + row.key_id + "]", { cms: { label: row.label } }, "text", value) %>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<% switch (element) { %>
+  <% case 'input': %>
+    <%= input(name, attr, type, value) %>
+  <% case 'datetime': %>
+    <%= datetime(name, attr, value) %>
+  <% case 'date': %>
+    <%= date(name, attr, value) %>
+  <% case 'select': %>
+    <%= select(name, attr, options, value) %>
+  <% case 'checkbox': %>
+    <%= checkbox(name, attr, value) %>
+  <% case 'textarea': %>
+    <%= textarea(name, attr, value) %>
+  <% case 'combo': %>
+    <%= combo(name, attr, options, value) %>
+  <% case 'subFields': %>
+    <%= subFields(name, attr, possible_fields, values) %>
+  <% case 'repeater': %>
+    <%= repeater(name, attr, sub_fields, value) %>
+  <% case 'dynamic_content': %>
+    <%= dynamic_content(name, attr, value, sub_fields) %>
+<% } %>

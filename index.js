@@ -6,37 +6,64 @@ var path      = require('path');
 var md5       = require('md5');
 var moment    = require('moment');
 var pkg       = require('./package.json')
+var ejs       = require('ejs');
 
 var jadeHelpers = require('./lib/jade-helpers.js');
+var ejsHelpers = require('./lib/ejs-helpers.js');
 
 module.exports = function (sails) {
 
-  var jadeLocals       = {};
-  var extendjadeLocals = function (locals) {
-    return _.assign(jadeLocals, locals);
+  var injectedVars = {};
+  var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
+
+  /**
+   * 
+   * @param {string} fileName 
+   * @param {object} locals 
+   * @returns 
+   */
+  var renderTemplate = function (fileName, locals = {}) {
+    const templatePath = path.join(__dirname, 'views', `${fileName}.${templateType}`);
+    locals = extendInjectedVars(locals);
+
+    locals.helpers = locals.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
+
+    if (locals.template === 'ejs') {
+      if(locals.async)
+        return ejs.renderFile(templatePath, {...locals, async:true});
+      else
+        return ejs.renderFile(templatePath, locals);
+    } else {
+      if(locals.async)
+        return new Promise ((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });
+      else
+        return jade.compileFile(templatePath)(locals);
+    }
   };
+
   return {
     initialize: function (cb) {
       console.log('sails-hook-cms:initialize');
-      jadeLocals.sails = sails;
+      injectedVars.sails = sails;
 
       const defaultConfig = {
         title: "Sails CMS",
         logo_url: false,
         styles: [
           '/admin/css/admin.css?v='+pkg.version
-        ]
+        ],
+        template: 'jade'
       }
 
-      jadeLocals.config = {
+      injectedVars.config = {
         title: _.get(sails,"config.cms.title", defaultConfig.title),
         logo_url: _.get(sails,"config.cms.logo_url", defaultConfig.logo_url),
         styles: _.get(sails,"config.cms.styles", defaultConfig.styles),
+        template: _.get(sails, "config.cms.template", defaultConfig.template)
       }
 
-      jadeLocals.helpers = jadeHelpers(sails);
-      jadeLocals._       = _;
-      jadeLocals.moment  = moment;
+      injectedVars._       = _;
+      injectedVars.moment  = moment;
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
 
@@ -60,7 +87,7 @@ module.exports = function (sails) {
     routes: {
       after: {
         'GET /admin/login': function (req, res) {
-          let html = jade.compileFile(path.join(__dirname, 'views/login.jade'))({
+          let html = renderTemplate('login', {
             referer: req.query.referer
           });
           res.send(html);
@@ -82,10 +109,8 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin': function (req, res, next) {
-          var jadeFn = jade.compileFile(path.join(__dirname, 'views/home.jade'));
-          var html   = jadeFn(extendjadeLocals({}));
-          return res.send(html);
+        'GET /admin': function (req, res, next) {          
+          return res.send(renderTemplate('home'));
         },
 
 
@@ -109,19 +134,16 @@ module.exports = function (sails) {
             }
 
             query.populateAll().then((rows) => {
-              let render = jade.compileFile(path.join(__dirname, 'views/model.index.jade'))
-              let html = render(extendjadeLocals({
-                currentUrl: req.path,
-                sortBy: req.query.sortBy || false,
-                modelName: req.params.model,
-                modelSchema: modelSchema,
-                cms: model.cms || {},
-                models: rows,
-                pageCount,
-                currentPage: req.query.page
-              }));
-
-                return res.send(html);
+                return res.send(renderTemplate('model.index',{
+                  currentUrl: req.path,
+                  sortBy: req.query.sortBy || false,
+                  modelName: req.params.model,
+                  modelSchema: modelSchema,
+                  cms: model.cms || {},
+                  models: rows,
+                  pageCount,
+                  currentPage: req.query.page
+                }));
             }).catch(res.negotiate);
 
           } else {
@@ -130,7 +152,7 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin/:model/create': function (req, res, next) {
+        'GET /admin/:model/create': async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
 
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
@@ -141,19 +163,18 @@ module.exports = function (sails) {
             delete modelSchema.updatedAt;
 
             //Using the async thing
-            let jadeRender = jadeAsync.compileFile(path.join(__dirname, 'views/model.create.jade'));
-            jadeRender(extendjadeLocals({
+            let html = await renderTemplate('model.create', {
               modelName: req.params.model,
-              modelSchema: modelSchema
-            })).done(function(html) {
-              return res.send(html);
-            });
+              modelSchema: modelSchema,
+              async:true
+            })
+            res.send(html);
           } else {
             return next();
           }
         },
 
-        'GET /admin/:model/edit/:modelId': function (req, res, next) {
+        'GET /admin/:model/edit/:modelId': async function (req, res, next) {
           if (req.params.modelId && req.params.modelId != "false" && req.params.model && sails.models[req.params.model]) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
             var modelSchema = _.clone(attributes);
@@ -171,14 +192,15 @@ module.exports = function (sails) {
               q.populate(associationInfo.alias);
             });
 
-            q.then(function (model) {
-              jadeAsync.compileFile(path.join(__dirname, 'views/model.edit.jade'))(extendjadeLocals({
+            q.then(async function (model) {
+
+              let html = await renderTemplate('model.edit', {
                 modelName: req.params.model,
                 modelSchema: modelSchema,
-                model: model
-              })).done(function(html) {
-                return res.send(html);
-              });
+                model: model,
+                async: true
+              })
+              res.send(html);
             }).catch((err) => res.negotiate(err));
           } else {
             return next();

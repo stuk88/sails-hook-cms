@@ -1,0 +1,67 @@
+<%- include('../partials/model.create.form.ejs') %>
+
+<% function content() { %>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-capitalize"><%= cms.label || modelName %></h2>
+            <small><%= models.length %></small>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-primary pull-right text-capitalize" href="/admin/<%= modelName %>/create">Add <%= modelName %></a>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-hover">
+                <thead class="thead-default">
+                    <tr>
+                        <th>Actions</th>
+                        <% for (const [attrName, config] of Object.entries(modelSchema)) { %>
+                            <% if (cms[attrName] !== false) { %>
+                                <th class="text-capitalize">
+                                    <a href="/admin/<%= modelName %>?sortBy=<%= sortByNext %>" class="<%= isSortedByClass %>"><%= _.get(config, "cms.label", attrName) %></a>
+                                </th>
+                            <% } %>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (models.length === 0) { %>
+                        <tr>
+                            <td class="text-center" colspan="100%">There are no entries. <a href="/admin/<%= modelName %>/create">Add one <%= modelName %> now.</a></td>
+                        </tr>
+                    <% } else { %>
+                        <% models.forEach((item) => { %>
+                            <tr>
+                                <td style="width: 145px;">
+                                    <a class="btn btn-primary-outline btn-sm" href="/admin/<%= modelName %>/edit/<%= item.id %>">Edit</a>
+                                    <a class="btn btn-primary-outline btn-sm" href="/admin/<%= modelName %>/duplicate/<%= item.id %>">Duplicate</a>
+                                    <a class="btn btn-danger-outline btn-sm" href="/admin/<%= modelName %>/delete/<%= item.id %>" onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                                <% for (const [attrName, attrs] of Object.entries(modelSchema)) { %>
+                                    <% if (cms && cms[attrName] !== false) { %>
+                                        <td><%= helpers.list.item(item[attrName], attrName, attrs) %></td>
+                                    <% } %>
+                                <% } %>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+            <% if (pageCount > 1) { %>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <% for (let i = 1; i <= pageCount; i++) { %>
+                            <li class="<%= (currentPage == i || (!currentPage && i == 1) ? 'disabled' : 'active') %>">
+                                <a class="page <%= (currentPage == i ? 'current-page' : '') %>" href="<%= currentUrl %>?page=<%= i %><%= sortBy ? '&sortBy=' + sortBy : '' %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            <% } %>
+        </div>
+    </div>
+<% } %>
+
+<%- include('./layout.ejs') %>

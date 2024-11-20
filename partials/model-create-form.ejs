@@ -1,0 +1,12 @@
+<% if (_.isEmpty(modelSchema)) { %>
+    <p class="text-warning">It appears that your <%= modelName %> schema is empty. Please specify some attributes.</p>
+    <p>For more information refer to the <a href="http://sailsjs.org/documentation/concepts/models-and-orm/attributes">sails documentation on Model's attributes.</a></p>
+<% } else { %>
+    <form action="/admin/<%= modelName %>/store" method="POST">
+        <% modelSchema.forEach(function(attr, attrName) { %>
+            <div><%= helpers.form.getElement(attrName, attr) %></div>
+        <% }); %>
+
+        <button class="btn btn-primary" type="submit">Create</button>
+    </form>
+<% } %> 

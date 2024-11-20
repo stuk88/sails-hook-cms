@@ -1,0 +1,11 @@
+<% mixin modelEditForm %>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="/admin/<%= modelName %>/update/<%= model.id %>" method="POST">
+                <% for (const [attrName, attr] of Object.entries(modelSchema)) { %>
+                    <div><%= helpers.form.getElement(attrName, attr, model[attrName]) %></div>
+                <% } %>
+                <button class="btn btn-primary" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
