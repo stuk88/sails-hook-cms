@@ -45,11 +45,11 @@ module.exports = function (sails) {
   var renderTemplate = function (fileName, locals = {}) {
     locals = extendInjectedVars(locals);
 
-    const templatePath = path.join(__dirname, 'views', `${fileName}.${locals.template}`);
+    const templatePath = path.join(__dirname, 'views', `${fileName}.${locals.config.template}`);
 
-    locals.helpers = locals.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
+    locals.helpers = locals.config.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
 
-    if (locals.template === 'ejs') {
+    if (locals.config.template === 'ejs') {
       if(locals.async)
         return ejs.renderFile(templatePath, {...locals, async:true});
       else
