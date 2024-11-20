@@ -32,7 +32,7 @@ html(lang="en")
           #bs-example-navbar-collapse-1
             //-.collapse.navbar-collapse
             ul.nav.navbar-nav
-              each model in _.filter(_.sortBy(sails.hooks.orm.models, "order"), function(model) {return _.get(model,"meta.junctionTable", false) == false})
+              each model in _.filter(_.sortBy(sails.models, "order"), function(model) {return _.get(model,"meta.junctionTable", false) == false})
                 if !model.cms || model.cms && !model.cms.hide
                     li.nav-item
                       - var title = _.get(model, "cms.label", model.identity);
