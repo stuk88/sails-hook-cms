@@ -23,8 +23,9 @@ module.exports = function (sails) {
    * @returns 
    */
   var renderTemplate = function (fileName, locals = {}) {
-    const templatePath = path.join(__dirname, 'views', `${fileName}.${templateType}`);
     locals = extendInjectedVars(locals);
+
+    const templatePath = path.join(__dirname, 'views', `${fileName}.${locals.template}`);
 
     locals.helpers = locals.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
 
