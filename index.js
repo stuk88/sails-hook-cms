@@ -97,8 +97,8 @@ module.exports = function (sails) {
     },
     routes: {
       after: {
-        'GET /admin/login': function (req, res) {
-          let html = renderTemplate('login', {
+        'GET /admin/login': async function (req, res) {
+          let html = await renderTemplate('login', {
             referer: req.query.referer
           });
           res.send(html);
@@ -120,11 +120,13 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin': function (req, res, next) {
+        'GET /admin': async function (req, res, next) {
           console.log(sails.models);
           console.log(sails.hooks.orm.models);
 
-          return res.send(renderTemplate('home'));
+          let html = await renderTemplate('home');
+
+          return res.send(html);
         },
 
 
@@ -147,8 +149,8 @@ module.exports = function (sails) {
               req.query.sortBy.split(",").forEach((sortBy) => query.sort(sortBy))
             }
 
-            query.populateAll().then((rows) => {
-              return res.send(renderTemplate('model.index', {
+            query.populateAll().then(async (rows) => {
+              return res.send(await renderTemplate('model.index', {
                 currentUrl: req.path,
                 sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
