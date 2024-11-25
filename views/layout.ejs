@@ -31,7 +31,7 @@
                 </a>
             </div>
             <ul class="nav navbar-nav">
-                <% Object.enteries(sails.models).filter(([key, model]) => !model.meta.junctionTable).forEach(model => { %>
+                <% modelsArray.forEach(model => { %>
                     <% if (!model.cms || (model.cms && !model.cms.hide)) { %>
                         <li class="nav-item">
                             <a class="nav-link text-capitalize" href="/admin/<%= model.identity %>"><%= _.get(model, "cms.label", model.identity) %></a>

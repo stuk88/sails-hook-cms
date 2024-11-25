@@ -15,6 +15,7 @@ module.exports = function (sails) {
 
   var injectedVars = {};
   injectedVars.sails = sails;
+  injectedVars.modelsArray = Object.values(sails.models).filter((model) => !model.meta.junctionTable);
 
   const defaultConfig = {
     title: "Sails CMS",
