@@ -53,6 +53,6 @@
     <script src="/admin/js/selectize-tree.js"></script>
     <script src="/admin/js/admin.js?v=1.1"></script>
 
-    <% if(typeof scripts !== "undefined") {scripts()} %>
+    <% block('scripts') %><% endblock %>
 </body>
 </html>
