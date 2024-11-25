@@ -45,7 +45,7 @@ module.exports = function (sails) {
   var renderTemplate = function (fileName, locals = {}) {
     locals = extendInjectedVars(locals);
 
-    const templatePath = (locals.config.template && locals.config.template !== "ejs") ? 'admin/'+filename : path.join(__dirname, 'views', `${fileName}`);
+    const templatePath = (!locals.config.template || locals.config.template == "ejs") ? 'admin/'+filename : path.join(__dirname, 'views', `${fileName}`);
     if(locals.config.template && locals.config.template !== "ejs")
       templatePath += locals.config.template;
 
