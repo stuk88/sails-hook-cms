@@ -1,0 +1,59 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+      <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+    </div>
+    <div class="panel-body">
+      <% var repeaterLength = (values && values.length) || 0; %>
+      <table class="table repeater table-striped table-hover">
+        <% var i = 0; %>
+        <% if (values) { %>
+          <% values.forEach(function(row) { %>
+            <tr>
+              <td>
+                <% for (var subFieldName in sub_fields) {
+                     var subField = sub_fields[subFieldName];
+                     var val = row[subFieldName] || null;
+                     %>
+                     <%- include('partials/repeater_row', {
+                       parent_field_name: name,
+                       sub_field_name: subFieldName,
+                       sub_field: subField,
+                       index: i,
+                       value: val
+                     }) %>
+                <% } %>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger remove-row">-</button>
+              </td>
+            </tr>
+            <% i++; %>
+          <% }); %>
+        <% } %>
+        <tr>
+          <td>
+            <% for (var subFieldName in sub_fields) {
+                 var subField = sub_fields[subFieldName];
+                 %>
+                 <%- include('partials/repeater_row', {
+                   parent_field_name: name,
+                   sub_field_name: subFieldName,
+                   sub_field: subField,
+                   index: i,
+                   value: null
+                 }) %>
+            <% } %>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger remove-row">-</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="panel-footer overflow-hidden">
+      <div class="col-xs-1 pull-right">
+        <button type="button" class="btn btn-success" id="add-row" data-last-index="<%= repeaterLength %>">+</button>
+      </div>
+    </div>
+  </div>
+  

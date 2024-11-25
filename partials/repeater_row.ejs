@@ -1,0 +1,27 @@
+<% var val = value || ''; %>
+<% var fieldName = parent_field_name + '[' + index + '][' + sub_field_name + ']'; %>
+<% sub_field.cms = sub_field.cms || {}; %>
+<% sub_field.cms.label = sub_field_name; %>
+<% var fieldType = sub_field.type; %>
+
+<% if (fieldType === 'string' || fieldType === 'float' || fieldType === 'integer') { %>
+  <% if (sub_field.enum) { %>
+    <%- include('partials/select', { name: fieldName, attr: sub_field, options: sub_field.options, value: val }) %>
+  <% } else { %>
+    <% var attrType = (fieldType === 'float' || fieldType === 'integer') ? 'number' : 'text'; %>
+    <% attrType = (sub_field.cms && sub_field.cms.type) ? sub_field.cms.type : attrType; %>
+    <%- include('partials/input', { name: fieldName, attr: sub_field, type: attrType, value: val }) %>
+  <% } %>
+<% } else if (fieldType === 'datetime') { %>
+  <%- include('partials/datetime', { name: fieldName, attr: sub_field, value: val }) %>
+<% } else if (fieldType === 'date') { %>
+  <%- include('partials/date', { name: fieldName, attr: sub_field, value: val }) %>
+<% } else if (fieldType === 'boolean') { %>
+  <%- include('partials/checkbox', { name: fieldName, attr: sub_field, value: val }) %>
+<% } else if (fieldType === 'json' && !(sub_field.cms && sub_field.cms.collection)) { %>
+  <%- include('partials/textarea', { name: fieldName, attr: sub_field, value: val }) %>
+<% } else if (fieldType === 'text') { %>
+  <%- include('partials/textarea', { name: fieldName, attr: sub_field, value: val }) %>
+<% } else if (sub_field.model || sub_field.collection || (fieldType === 'json' && sub_field.cms.collection)) { %>
+  <%- include('partials/combo', { name: fieldName, attr: sub_field, options: sub_field.options, value: val }) %>
+<% } %>

@@ -1,0 +1,21 @@
+<% var inputType = type || 'text'; %>
+<div class="panel panel-default form-group">
+  <div class="panel-body">
+    <label class="control-label capitalize" for="<%= name %>">
+      <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+    </label>
+    <% var val = (value && (!attr.cms || attr.cms.type !== 'password')) ? value : ''; %>
+    <input class="form-control"
+      type="<%= inputType %>"
+      name="<%= name %>"
+      value="<%= val %>"
+      <%= attr.required ? 'required' : '' %>
+      <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
+      <%= attr.type === 'float' ? 'step="any"' : '' %>
+      id="<%= name %>"
+    />
+  </div>
+  <% if (attr.cms && attr.cms.description) { %>
+    <div class="panel-footer"><%- attr.cms.description %></div>
+  <% } %>
+</div>
