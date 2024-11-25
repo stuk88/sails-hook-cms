@@ -45,7 +45,7 @@ module.exports = function (sails) {
   var renderTemplate = function (fileName, locals = {}) {
     locals = extendInjectedVars(locals);
 
-    const templatePath = path.join(__dirname, 'views', `${fileName}`);
+    const templatePath = (locals.config.template && locals.config.template !== "ejs") ? 'admin/'+filename : path.join(__dirname, 'views', `${fileName}`);
     if(locals.config.template && locals.config.template !== "ejs")
       templatePath += locals.config.template;
 
@@ -53,9 +53,9 @@ module.exports = function (sails) {
 
     if (locals.config.template === 'ejs') {
       if (locals.async)
-        return sails.renderView(templatePath, { ...locals, async: true, layout: path.join(__dirname, 'views', 'layout.ejs') });
+        return sails.renderView(templatePath, { ...locals, async: true, layout: 'admin/layout' });
       else
-        return sails.renderView(templatePath, {...locals, layout: path.join(__dirname, 'views', 'layout.ejs')});
+        return sails.renderView(templatePath, {...locals, layout: 'admin/layout'});
     } else {
       if (locals.async)
         return new Promise((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });
