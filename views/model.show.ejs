@@ -1,11 +1,8 @@
 
-<% function content(){ %>
-    <h2><%= modelName %> Details</h2>
-    <div>
-        <% for (const [attrName, attr] of Object.entries(modelSchema)) { %>
-            <p><strong><%= _.get(attr, "cms.label", attrName) %>:</strong> <%= model[attrName] %></p>
-        <% } %>
-    </div>
-    <a class="btn btn-primary" href="/admin/<%= modelName %>/edit/<%= model.id %>">Edit</a>
-<% } %>
-<%- include('./layout.ejs') %>
+<h2><%= modelName %> Details</h2>
+<div>
+    <% for (const [attrName, attr] of Object.entries(modelSchema)) { %>
+        <p><strong><%= _.get(attr, "cms.label", attrName) %>:</strong> <%= model[attrName] %></p>
+    <% } %>
+</div>
+<a class="btn btn-primary" href="/admin/<%= modelName %>/edit/<%= model.id %>">Edit</a>

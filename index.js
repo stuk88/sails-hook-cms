@@ -51,9 +51,9 @@ module.exports = function (sails) {
 
     if (locals.config.template === 'ejs') {
       if (locals.async)
-        return ejs.renderFile(templatePath, { ...locals, async: true });
+        return sails.renderView(templatePath, { ...locals, async: true, layout: path.join(__dirname, 'views', 'layout.ejs') });
       else
-        return ejs.renderFile(templatePath, locals);
+        return sails.renderView(templatePath, {...locals, layout: path.join(__dirname, 'views', 'layout.ejs')});
     } else {
       if (locals.async)
         return new Promise((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });

@@ -1,6 +1,6 @@
-<%- include('../partials/model.create.form.ejs') %>
 
-<% function content() { %>
+<%- include('./model.create.form.ejs') %>
+
     <div class="row">
         <div class="col-md-6">
             <h2 class="text-capitalize"><%= cms.label || modelName %></h2>
@@ -62,6 +62,4 @@
             <% } %>
         </div>
     </div>
-<% } %>
 
-<%- include('./layout.ejs') %>
