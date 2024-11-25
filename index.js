@@ -52,10 +52,7 @@ module.exports = function (sails) {
     locals.helpers = locals.config.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
 
     if (locals.config.template === 'ejs') {
-      if (locals.async)
         return sails.renderView(templatePath, { ...locals, async: true, layout: 'layout' });
-      else
-        return sails.renderView(templatePath, {...locals, layout: 'layout'});
     } else {
       if (locals.async)
         return new Promise((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });
@@ -183,8 +180,7 @@ module.exports = function (sails) {
             //Using the async thing
             let html = await renderTemplate('model.create', {
               modelName: req.params.model,
-              modelSchema: modelSchema,
-              async: true
+              modelSchema: modelSchema
             })
             res.send(html);
           } else {
@@ -215,8 +211,7 @@ module.exports = function (sails) {
               let html = await renderTemplate('model.edit', {
                 modelName: req.params.model,
                 modelSchema: modelSchema,
-                model: model,
-                async: true
+                model: model
               })
               res.send(html);
             }).catch((err) => res.negotiate(err));

@@ -6,7 +6,7 @@
             <% } else { %>
                 <form action="/admin/<%= modelName %>/store" method="POST">
                     <% for (const [attrName, attr] of Object.entries(modelSchema)) { %>
-                        <div><%= helpers.form.getElement(attrName, attr) %></div>
+                        <div><%- helpers.form.getElement(attrName, attr) %></div>
                     <% } %>
                     <button class="btn btn-primary" type="submit">Create</button>
                 </form>
