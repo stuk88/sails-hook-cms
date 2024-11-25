@@ -1,12 +1,12 @@
-var ObjectId  = require('mongodb').ObjectId
-var jade      = require('jade');
+var ObjectId = require('mongodb').ObjectId
+var jade = require('jade');
 var jadeAsync = require('jade-async');
-var _         = require('lodash');
-var path      = require('path');
-var md5       = require('md5');
-var moment    = require('moment');
-var pkg       = require('./package.json')
-var ejs       = require('ejs');
+var _ = require('lodash');
+var path = require('path');
+var md5 = require('md5');
+var moment = require('moment');
+var pkg = require('./package.json')
+var ejs = require('ejs');
 
 var jadeHelpers = require('./lib/jade-helpers.js');
 var ejsHelpers = require('./lib/ejs-helpers.js');
@@ -15,26 +15,25 @@ module.exports = function (sails) {
 
   var injectedVars = {};
   injectedVars.sails = sails;
-  injectedVars.modelsArray = Object.values(sails.models).filter((model) => !model.meta.junctionTable);
 
   const defaultConfig = {
     title: "Sails CMS",
     logo_url: false,
     styles: [
-      '/admin/css/admin.css?v='+pkg.version
+      '/admin/css/admin.css?v=' + pkg.version
     ],
     template: 'jade'
   }
 
   injectedVars.config = {
-    title: _.get(sails,"config.cms.title", defaultConfig.title),
-    logo_url: _.get(sails,"config.cms.logo_url", defaultConfig.logo_url),
-    styles: _.get(sails,"config.cms.styles", defaultConfig.styles),
+    title: _.get(sails, "config.cms.title", defaultConfig.title),
+    logo_url: _.get(sails, "config.cms.logo_url", defaultConfig.logo_url),
+    styles: _.get(sails, "config.cms.styles", defaultConfig.styles),
     template: _.get(sails, "config.cms.template", defaultConfig.template)
   }
 
-  injectedVars._       = _;
-  injectedVars.moment  = moment;
+  injectedVars._ = _;
+  injectedVars.moment = moment;
   var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
 
   /**
@@ -51,41 +50,50 @@ module.exports = function (sails) {
     locals.helpers = locals.config.template == 'jade' ? jadeHelpers(sails) : ejsHelpers(sails);
 
     if (locals.config.template === 'ejs') {
-      if(locals.async)
-        return ejs.renderFile(templatePath, {...locals, async:true});
+      if (locals.async)
+        return ejs.renderFile(templatePath, { ...locals, async: true });
       else
         return ejs.renderFile(templatePath, locals);
     } else {
-      if(locals.async)
-        return new Promise ((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });
+      if (locals.async)
+        return new Promise((resolve, reject) => { jadeAsync.compileFile(templatePath)(locals).done((html) => resolve(html)) });
       else
         return jade.compileFile(templatePath)(locals);
     }
   };
 
   return {
-    initialize: function (cb) {
+    initialize: function () {
       console.log('sails-hook-cms:initialize');
-      
+
       //This adds the validation function cms as [model].type = cms = function(){}
       //This is to prevent
 
-      for (var key in sails.models) {
-        if (sails.models.hasOwnProperty(key)) {
-          if (!sails.models[key].types) sails.models[key].types = {};
-          sails.models[key].types.cms = function () {
-            return true;
-          };
-        }
-      }
+      return new Promise((resolve) => {
+        sails.on('hook:orm:loaded', () => {
 
-      require('./lib/bindAssets')(sails, function (err, result) {
-        if (err) {
-          sails.log.error(err);
-          return cb(err);
-        }
-        cb();
+          for (var key in sails.models) {
+            if (sails.models.hasOwnProperty(key)) {
+              if (!sails.models[key].types) sails.models[key].types = {};
+              sails.models[key].types.cms = function () {
+                return true;
+              };
+            }
+          }
+
+          injectedVars.modelsArray = Object.values(sails.models).filter((model) => !model.meta.junctionTable);
+
+
+          require('./lib/bindAssets')(sails, function (err, result) {
+            if (err) {
+              sails.log.error(err);
+              return cb(err);
+            }
+            resolve();
+          });
+        });
       });
+
     },
     routes: {
       after: {
@@ -101,7 +109,7 @@ module.exports = function (sails) {
         },
 
         'POST /admin/login': function (req, res, next) {
-          Users.findOne({email: req.body.email, password: md5(req.body.password), role: 'admin'}).then((user) => {
+          Users.findOne({ email: req.body.email, password: md5(req.body.password), role: 'admin' }).then((user) => {
             if (!user)
               return res.redirect('/admin');
 
@@ -112,17 +120,17 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin': function (req, res, next) {     
-          console.log(sails.models);     
-          console.log(sails.hooks.orm.models);     
-          
+        'GET /admin': function (req, res, next) {
+          console.log(sails.models);
+          console.log(sails.hooks.orm.models);
+
           return res.send(renderTemplate('home'));
         },
 
 
         'GET /admin/:model': async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
-            let model       = sails.models[req.params.model];
+            let model = sails.models[req.params.model];
             var modelSchema = model._attributes || model.attributes;
             //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
@@ -130,8 +138,8 @@ module.exports = function (sails) {
             let pageCount = numRecords / 100;
             let query = model.find({}).limit(100);
 
-            if(req.query.page) {
-              let skipBy = (req.query.page-1) * 100;
+            if (req.query.page) {
+              let skipBy = (req.query.page - 1) * 100;
               query.skip(skipBy);
             }
 
@@ -140,16 +148,16 @@ module.exports = function (sails) {
             }
 
             query.populateAll().then((rows) => {
-                return res.send(renderTemplate('model.index',{
-                  currentUrl: req.path,
-                  sortBy: req.query.sortBy || false,
-                  modelName: req.params.model,
-                  modelSchema: modelSchema,
-                  cms: model.cms || {},
-                  models: rows,
-                  pageCount,
-                  currentPage: req.query.page
-                }));
+              return res.send(renderTemplate('model.index', {
+                currentUrl: req.path,
+                sortBy: req.query.sortBy || false,
+                modelName: req.params.model,
+                modelSchema: modelSchema,
+                cms: model.cms || {},
+                models: rows,
+                pageCount,
+                currentPage: req.query.page
+              }));
             }).catch(res.negotiate);
 
           } else {
@@ -172,7 +180,7 @@ module.exports = function (sails) {
             let html = await renderTemplate('model.create', {
               modelName: req.params.model,
               modelSchema: modelSchema,
-              async:true
+              async: true
             })
             res.send(html);
           } else {
@@ -192,7 +200,7 @@ module.exports = function (sails) {
 
             //FindOne model
             let q = sails.models[req.params.model]
-                .findOne({id: req.params.modelId});
+              .findOne({ id: req.params.modelId });
 
             sails.models[req.params.model].associations.forEach(function (associationInfo) {
               q.populate(associationInfo.alias);
@@ -233,14 +241,14 @@ module.exports = function (sails) {
         'GET /admin/:model/duplicate/:modelId': function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
 
-            sails.models[req.params.model].findOne({id: req.params.modelId}).then((found_model) => {
+            sails.models[req.params.model].findOne({ id: req.params.modelId }).then((found_model) => {
               //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
               delete found_model.id;
               return sails.models[req.params.model]
-                  .create(found_model)
-                  .then((created) => {
-                    res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
-                  });
+                .create(found_model)
+                .then((created) => {
+                  res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
+                });
 
             }).catch(res.negotiate);
           } else {
@@ -259,7 +267,7 @@ module.exports = function (sails) {
                 fields[key] = ObjectId(value);
 
               if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key])) {
-                if(sails.config.connections[sails.models[req.params.model].connection].adapter == 'sails-mysql')
+                if (sails.config.connections[sails.models[req.params.model].connection].adapter == 'sails-mysql')
                   fields[key] = fields[key] == "" ? [] : [parseInt(fields[key])];
                 else
                   fields[key] = [fields[key]];
@@ -271,15 +279,15 @@ module.exports = function (sails) {
               if (attributes[key].type == "datetime")
                 fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
 
-              if(key == "password" && fields[key] == "")
+              if (key == "password" && fields[key] == "")
                 delete fields[key];
             });
 
-            sails.models[req.params.model].update({id: req.params.modelId}, fields)
-                .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
-                .catch((err) => {
-                  res.negotiate(err)
-                });
+            sails.models[req.params.model].update({ id: req.params.modelId }, fields)
+              .then(() => res.redirect(`/admin/${req.params.model}/edit/${req.params.modelId}`))
+              .catch((err) => {
+                res.negotiate(err)
+              });
           } else {
             return next();
           }
@@ -291,9 +299,9 @@ module.exports = function (sails) {
 
             //FindOne model
             sails.models[req.params.model]
-                .destroy({id: req.params.modelId})
-                .then(() => res.redirect('/admin/' + req.params.model))
-                .catch(res.negotiate);
+              .destroy({ id: req.params.modelId })
+              .then(() => res.redirect('/admin/' + req.params.model))
+              .catch(res.negotiate);
           } else {
             return next();
           }
