@@ -36,6 +36,22 @@ module.exports = function (sails) {
   injectedVars.moment = moment;
   var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
 
+  const fixCmsAttributeConfig = function(modelName, modelSchema) {
+    if(_.get(sails, `models[${modelName}].cms.attributes`, false))
+      {
+        Object.entries(sails.models[modelName].cms.attributes).forEach(([name, attr]) => {
+          modelSchema[name] = {
+            ...modelSchema[name],
+            cms: {
+              ...attr
+            }
+          }
+        })
+
+        return modelSchema;
+      }
+  }
+
   /**
    * 
    * @param {string} fileName 
@@ -150,7 +166,7 @@ module.exports = function (sails) {
                 currentUrl: req.path,
                 sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
-                modelSchema: modelSchema,
+                modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema),
                 cms: model.cms || {},
                 models: rows,
                 pageCount,
@@ -177,7 +193,7 @@ module.exports = function (sails) {
             //Using the async thing
             let html = await renderTemplate('model.create', {
               modelName: req.params.model,
-              modelSchema: modelSchema
+              modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema)
             })
             res.send(html);
           } else {
@@ -207,7 +223,7 @@ module.exports = function (sails) {
 
               let html = await renderTemplate('model.edit', {
                 modelName: req.params.model,
-                modelSchema: modelSchema,
+                modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema),
                 model: model
               })
               res.send(html);
