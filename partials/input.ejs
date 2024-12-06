@@ -11,7 +11,7 @@
       value="<%= val %>"
       <%= attr.required ? 'required' : '' %>
       <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
-      <%= attr.type === 'float' ? 'step="any"' : '' %>
+      <%= (attr.type === 'float' || attr.cms.type == "float") ? 'step="any"' : '' %>
       id="<%= name %>"
     />
   </div>
