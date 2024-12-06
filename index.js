@@ -148,7 +148,7 @@ module.exports = function (sails) {
             //let relation_fields = Object.entries(modelSchema).reduce((fields, [field_key, field_config]) => field_config.model || field_config.collection ? fields.push({name: field_key, modelName: field_config.model}) && fields : fields, []);
             //Find all models
             let numRecords = await model.count({});
-            let pageCount = numRecords / 100;
+            let pageCount = Math.ceil(numRecords / 100);
             let query = model.find({}).limit(100);
 
             if (req.query.page) {
