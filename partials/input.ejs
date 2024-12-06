@@ -4,18 +4,18 @@
     <label class="control-label capitalize" for="<%= name %>">
       <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
     </label>
-    <% var val = (value && (!attr.cms || attr.cms.type !== 'password') && !attr.protect) ? value : ''; %>
+    <% var val = (value && (_.get(attr,"cms.type", false) !== 'password') && !attr.protect) ? value : ''; %>
     <input class="form-control"
       type="<%= inputType %>"
       name="<%= name %>"
       value="<%= val %>"
       <%= attr.required ? 'required' : '' %>
-      <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
-      <%= (attr.type === 'float' || attr.cms.type == "float") ? 'step="any"' : '' %>
+      <%= _.get(attr,"cms.disabled",false) ? 'disabled' : '' %>
+      <%= (attr.type === 'float' || _.get(attr, "cms.type", false) == "float") ? 'step="any"' : '' %>
       id="<%= name %>"
     />
   </div>
-  <% if (attr.cms && attr.cms.description) { %>
+  <% if (_.get(attr, "cms.description", false)) { %>
     <div class="panel-footer"><%- attr.cms.description %></div>
   <% } %>
 </div>

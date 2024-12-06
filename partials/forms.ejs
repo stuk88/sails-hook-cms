@@ -1,6 +1,6 @@
 <% switch (element) {
   case 'input':
-    %><%- include('./input', { name: name, attr: attr, type: type, value: value }) %><%
+    %><%- include('./input', { name: name, attr: attr, type: type, value: value,_:_ }) %><%
     break;
   case 'datetime':
     %><%- include('./datetime', { name: name, attr: attr, value: value }) %><%
