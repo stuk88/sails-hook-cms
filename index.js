@@ -47,9 +47,8 @@ module.exports = function (sails) {
             }
           }
         })
-
-        return modelSchema;
       }
+      return modelSchema;
   }
 
   /**
