@@ -120,9 +120,6 @@ module.exports = function (sails) {
 
 
         'GET /admin': async function (req, res, next) {
-          console.log(sails.models);
-          console.log(sails.hooks.orm.models);
-
           let html = await renderTemplate('home');
 
           return res.send(html);
