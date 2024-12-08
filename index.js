@@ -41,6 +41,13 @@ module.exports = function (sails) {
   .replace(/^./, (match) => match.toUpperCase())
   .trim();
 
+  const addAttrLabels = function (modelSchema) {
+    Object.entries(sails.models[modelName]).forEach(([name, attr]) => {
+      modelSchema[name].cms = _.get(modelSchema,"[name].cms", {});
+      modelSchema[name].cms.label = _.get(modelSchema,"[name].cms.label", camel2title(name)) 
+    })
+    return modelSchema;
+  }
 
   const fixCmsAttributeConfig = function(modelName, modelSchema) {
     if(_.get(sails, `models[${modelName}].cms.attributes`, false))
@@ -49,7 +56,7 @@ module.exports = function (sails) {
           modelSchema[name] = {
             ...modelSchema[name],
             cms: {
-              label: _.get(modelSchema,"[name].cms.label", camel2title(name)),
+              ...(_.get(modelSchema,"[name].cms", {})),
               ...attr
             }
           }
@@ -57,6 +64,8 @@ module.exports = function (sails) {
       }
       return modelSchema;
   }
+
+  const buildModelSchema = (modelName, modelSchema) => addAttrLabels(fixCmsAttributeConfig(modelName, modelSchema));
 
   /**
    * 
@@ -172,7 +181,7 @@ module.exports = function (sails) {
                 currentUrl: req.path,
                 sortBy: req.query.sortBy || false,
                 modelName: req.params.model,
-                modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema),
+                modelSchema: buildModelSchema(req.params.model, modelSchema),
                 cms: model.cms || {},
                 models: rows,
                 pageCount,
@@ -199,7 +208,7 @@ module.exports = function (sails) {
             //Using the async thing
             let html = await renderTemplate('model.create', {
               modelName: req.params.model,
-              modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema)
+              modelSchema: buildModelSchema(req.params.model, modelSchema)
             })
             res.send(html);
           } else {
@@ -229,7 +238,7 @@ module.exports = function (sails) {
 
               let html = await renderTemplate('model.edit', {
                 modelName: req.params.model,
-                modelSchema: fixCmsAttributeConfig(req.params.model, modelSchema),
+                modelSchema: buildModelSchema(req.params.model, modelSchema),
                 model: model
               })
               res.send(html);
