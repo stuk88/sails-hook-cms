@@ -25,3 +25,15 @@ th a.sortedBy:after {
 th a.sortedBy.desc:after {
     content: '\f0d8';
 }
+
+body>.navbar-default {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+.body-container {
+    padding: 100px 40px 0;
+}
