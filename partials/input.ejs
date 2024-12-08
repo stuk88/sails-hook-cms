@@ -1,10 +1,11 @@
 <% var inputType = type || 'text'; %>
+<% var inputType = _.get(attr,"cms.type", false) == 'password' || attr.protect ? 'password' : inputType; %>
 <div class="panel panel-default form-group">
   <div class="panel-body">
     <label class="control-label capitalize" for="<%= name %>">
       <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
     </label>
-    <% var val = (value && (_.get(attr,"cms.type", false) !== 'password') && !attr.protect) ? value : ''; %>
+    <% var val = (value && (_.get(attr,"cms.type", false) !== 'password' || !attr.protect)) ? value : ''; %>
     <input class="form-control"
       type="<%= inputType %>"
       name="<%= name %>"
