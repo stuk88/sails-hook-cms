@@ -104,7 +104,8 @@ module.exports = function (sails) {
 
           for (var key in sails.models) {
             if (sails.models.hasOwnProperty(key)) {
-              if (!sails.models[key].types) sails.models[key].types = {};
+              if (!sails.models[key].types) 
+                sails.models[key].types = {};
               sails.models[key].types.cms = function () {
                 return true;
               };
