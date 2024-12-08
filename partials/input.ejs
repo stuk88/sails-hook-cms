@@ -1,18 +1,18 @@
 <% var inputType = type || 'text'; %>
 <% var inputType = _.get(attr,"cms.type", false) == 'password' || attr.protect ? 'password' : inputType; %>
-<% let description = _.get(attr, "cms.description", false) || attr.description || '';
+<% let description = _.get(attr, "cms.description", false) || attr.description || ''; %>
 <div class="panel panel-default form-group">
   <div class="panel-body">
     <label class="control-label capitalize" for="<%= name %>">
       <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
     </label>
     <% var val = (value && (_.get(attr,"cms.type", false) !== 'password' || !attr.protect)) ? value : ''; %>
-    <% var val = _.get(val,"",attr.defaultsTo)%>
+    <% var val = _.get(val,"",attr.defaultsTo); %>
     <input class="form-control"
       type="<%= inputType %>"
       name="<%= name %>"
       value="<%= val %>"
-      placeholder="<%= attr.example || attr.cms.placeholder %>"
+      placeholder="<%= (attr.example || attr.cms.placeholder) %>"
       <%= attr.required ? 'required' : '' %>
       <%= _.get(attr,"cms.disabled",false) ? 'disabled' : '' %>
       <%= (attr.type === 'float' || _.get(attr, "cms.type", false) == "float") ? 'step=any' : '' %>
