@@ -6,6 +6,7 @@
       <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
     </label>
     <% var val = (value && (_.get(attr,"cms.type", false) !== 'password' || !attr.protect)) ? value : ''; %>
+    <% var val = (!value && attr.defaultsTo) ? attr.defaultsTo : value; %>
     <input class="form-control"
       type="<%= inputType %>"
       name="<%= name %>"
