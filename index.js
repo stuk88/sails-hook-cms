@@ -35,6 +35,12 @@ module.exports = function (sails) {
   injectedVars._ = _;
   injectedVars.moment = moment;
   var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
+  
+  const camel2title = (camelCase) => camelCase
+  .replace(/([A-Z])/g, (match) => ` ${match}`)
+  .replace(/^./, (match) => match.toUpperCase())
+  .trim();
+
 
   const fixCmsAttributeConfig = function(modelName, modelSchema) {
     if(_.get(sails, `models[${modelName}].cms.attributes`, false))
@@ -43,6 +49,7 @@ module.exports = function (sails) {
           modelSchema[name] = {
             ...modelSchema[name],
             cms: {
+              label: _.get(modelSchema,"[name].cms.label", camel2title(name)),
               ...attr
             }
           }
