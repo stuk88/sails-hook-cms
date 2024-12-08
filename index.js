@@ -41,10 +41,10 @@ module.exports = function (sails) {
   .replace(/^./, (match) => match.toUpperCase())
   .trim();
 
-  const addAttrLabels = function (modelSchema) {
-    Object.entries(sails.models[modelName]).forEach(([name, attr]) => {
-      modelSchema[name].cms = _.get(modelSchema,"[name].cms", {});
-      modelSchema[name].cms.label = _.get(modelSchema,"[name].cms.label", camel2title(name)) 
+  const addAttrLabels = function (modelName, modelSchema) {
+    Object.entries(modelSchema).forEach(([name, attr]) => {
+      modelSchema[name].cms = _.get(modelSchema,`[${name}].cms`, {});
+      modelSchema[name].cms.label = _.get(modelSchema,`[${name}].cms.label`, camel2title(name)) 
     })
     return modelSchema;
   }
@@ -52,7 +52,7 @@ module.exports = function (sails) {
   const fixCmsAttributeConfig = function(modelName, modelSchema) {
     if(_.get(sails, `models[${modelName}].cms.attributes`, false))
       {
-        Object.entries(sails.models[modelName].cms.attributes).forEach(([name, attr]) => {
+        Object.entries(modelSchema).forEach(([name, attr]) => {
           modelSchema[name] = {
             ...modelSchema[name],
             cms: {
@@ -65,7 +65,7 @@ module.exports = function (sails) {
       return modelSchema;
   }
 
-  const buildModelSchema = (modelName, modelSchema) => addAttrLabels(fixCmsAttributeConfig(modelName, modelSchema));
+  const buildModelSchema = (modelName, modelSchema) => addAttrLabels(modelName, fixCmsAttributeConfig(modelName, modelSchema));
 
   /**
    * 
