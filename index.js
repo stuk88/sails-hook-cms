@@ -301,8 +301,8 @@ module.exports = function (sails) {
               if (attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
 
-              if (typeof sails.models[req.params.model]._attributes[key].collection != "undefined" && !Array.isArray(fields[key])) {
-                if (sails.config.connections[sails.models[req.params.model].connection].adapter == 'sails-mysql')
+              if (_.get(sails,`models[${req.params.model}]._attributes[${key}].collection`, false) && !Array.isArray(fields[key])) {
+                if (_.get(sails,`config.connections[${_.get(sails,`models[${req.params.model}].connection`)}].adapter`, false) == 'sails-mysql')
                   fields[key] = fields[key] == "" ? [] : [parseInt(fields[key])];
                 else
                   fields[key] = [fields[key]];
