@@ -256,8 +256,10 @@ module.exports = function (sails) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
 
             Object.entries(fields).forEach(([key, value]) => {
-              if((attributes[key].collection || attributes[key].model) && value == '' ) 
-                fields[key] = null;
+              if((attributes[key].collection || attributes[key].model) && value == '' )  {
+                delete fields[key];
+                return;
+              }
 
               if (attributes[key].type == "objectid")
                 fields[key] = new ObjectId(value);
