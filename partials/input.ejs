@@ -6,8 +6,8 @@
     <label class="control-label capitalize" for="<%= name %>">
       <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
     </label>
-    <% var val = (value && (_.get(attr,"cms.type", false) !== 'password' || !attr.protect)) ? value : ''; %>
-    <% var val = _.get(val,"",attr.defaultsTo); %>
+    <% var val = (value && (_.get(attr,"cms.type", false) !== 'password' && !attr.protect)) ? value : ''; %>
+    <% var val = typeof val != "undefined" ? val : attr.defaultsTo; %>
     <input class="form-control"
       type="<%= inputType %>"
       name="<%= name %>"
