@@ -112,7 +112,7 @@ module.exports = function (sails) {
             }
           }
 
-          injectedVars.modelsArray = Object.values(sails.models).filter((model) => !model.meta.junctionTable);
+          injectedVars.modelsArray = Object.values(sails.models).filter((model) => (!model.junctionTable && !model.meta.junctionTable));
 
 
           require('./lib/bindAssets')(sails, function (err, result) {
