@@ -56,7 +56,7 @@ module.exports = function (sails) {
           modelSchema[name] = {
             ...modelSchema[name],
             cms: {
-              ...(_.get(modelSchema,"[name].cms", {})),
+              ...(_.get(modelSchema, `[${name}].cms`, {})),
               ...attr
             }
           }
