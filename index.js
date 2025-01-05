@@ -256,6 +256,10 @@ module.exports = function (sails) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
 
             Object.entries(fields).forEach(([key, value]) => {
+
+              if(attributes[key].type == 'number' && value == '')
+                fields[key] = 0;
+
               if((attributes[key].collection || attributes[key].model) && value == '' )  {
                 delete fields[key];
                 return;
@@ -263,6 +267,22 @@ module.exports = function (sails) {
 
               if (attributes[key].type == "objectid")
                 fields[key] = new ObjectId(value);
+
+
+              if (_.get(sails,`models[${req.params.model}]._attributes[${key}].collection`, false) && !Array.isArray(fields[key])) {
+                if (_.get(sails,`config.connections[${_.get(sails,`models[${req.params.model}].connection`)}].adapter`, false) == 'sails-mysql')
+                  fields[key] = fields[key] == "" ? [] : [parseInt(fields[key])];
+                else
+                  fields[key] = [fields[key]];
+              }
+
+
+              if (attributes[key].type == "date")
+                fields[key] = moment(value, "MM-DD-YYYY").toDate();
+
+              if (attributes[key].type == "datetime")
+                fields[key] = moment(value, "MM-DD-YYYY hh:mm").toDate();
+
             })
 
             sails.models[req.params.model].create(fields)
@@ -281,6 +301,7 @@ module.exports = function (sails) {
               delete found_model.id;
               return sails.models[req.params.model]
                 .create(found_model)
+                .fetch()
                 .then((created) => {
                   res.redirect('/admin/' + req.params.model + '/edit/' + created.id)
                 });
@@ -298,6 +319,10 @@ module.exports = function (sails) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
 
             Object.entries(fields).forEach(([key, value]) => {
+              
+              if(attributes[key].type == 'number' && value == '')
+                fields[key] = 0;
+
               if((attributes[key].collection || attributes[key].model) && value == '' )  {
                 delete fields[key];
                 return;
