@@ -56,8 +56,7 @@ module.exports = function (sails) {
           modelSchema[name] = {
             ...modelSchema[name],
             cms: {
-              ...(_.get(modelSchema, `[${name}].cms`, {})),
-              ...attr
+              ...(_.get(sails, `models[${modelName}].cms.attributes[${name}]`, null)),
             }
           }
         })
@@ -319,7 +318,7 @@ module.exports = function (sails) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
 
             Object.entries(fields).forEach(([key, value]) => {
-              
+
               if(attributes[key].type == 'number' && value == '')
                 fields[key] = 0;
 
