@@ -1,0 +1,32 @@
+<% switch (element) {
+  case 'input':
+    %><%- include('./input', { name: name, attr: attr, type: type, value: value,_:_ }) %><%
+    break;
+  case 'datetime':
+    %><%- include('./datetime', { name: name, attr: attr, value: value }) %><%
+    break;
+  case 'date':
+    %><%- include('./date', { name: name, attr: attr, value: value }) %><%
+    break;
+  case 'select':
+    %><%- include('./select', { name: name, attr: attr, options: options, value: value }) %><%
+    break;
+  case 'checkbox':
+    %><%- include('./checkbox', { name: name, attr: attr, value: value }) %><%
+    break;
+  case 'textarea':
+    %><%- include('./textarea', { name: name, attr: attr, value: value }) %><%
+    break;
+  case 'combo':
+    %><%- include('./combo', { name: name, attr: attr, options: options, value: value }) %><%
+    break;
+  case 'subFields':
+    %><%- include('./subFields', { name: name, attr: attr, possible_fields: possible_fields, values: values }) %><%
+    break;
+  case 'repeater':
+    %><%- include('./repeater', { name: name, attr: attr, sub_fields: sub_fields, values: value }) %><%
+    break;
+  case 'dynamic_content':
+    %><%- include('./dynamic_content', { name: name, attr: attr, value: value, sub_fields: sub_fields }) %><%
+    break;
+} %>

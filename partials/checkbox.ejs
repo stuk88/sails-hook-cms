@@ -1,0 +1,18 @@
+<div class="panel panel-default checkbox form-group">
+    <div class="panel-body">
+      <label class="control-label" for="<%= name %>">
+        <input type="checkbox"
+          name="<%= name %>"
+          value="true"
+          id="<%= name %>"
+          <%= value ? 'checked' : '' %>
+          <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
+        />
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>
+      </label>
+    </div>
+    <% if (attr.cms && attr.cms.description) { %>
+      <div class="panel-footer"><%- attr.cms.description %></div>
+    <% } %>
+  </div>
+  

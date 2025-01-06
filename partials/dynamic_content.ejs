@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+      <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+    </div>
+    <div class="panel-body">
+      <div class="dynamic_content_field"
+        data-model-attr='<%= JSON.stringify(attr) %>'
+        data-sub-fields='<%= JSON.stringify(sub_fields) %>'
+        id="<%= name %>"
+      >
+        <% if (sub_fields) { %>
+          <% var model = value; %>
+          <% sub_fields.forEach(function(row) { %>
+            <% var val = model && model[row.key_id] || null; %>
+            <%- include('partials/input', {
+              name: name + '[' + row.key_id + ']',
+              attr: { cms: { label: row.label } },
+              type: 'text',
+              value: val
+            }) %>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  

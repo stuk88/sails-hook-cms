@@ -1,0 +1,25 @@
+<% var label = (attr.cms && attr.cms.label) || name; %>
+<% var modelName = attr && (attr.model || attr.collection || (attr.type === 'json' && attr.cms.collection)); %>
+<div class="panel panel-default form-group">
+  <div class="panel-body">
+    <label class="control-label capitalize" for="<%= name %>">
+      <%= label %><%= attr.required ? '*' : '' %>:
+    </label>
+    <input class="selectize"
+      id="<%= name %>"
+      name="<%= name %>"
+      data-options='<%= JSON.stringify(options) %>'
+      data-data="<%= value %>"
+      multiple
+      <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
+    />
+    <% if (modelName) { %>
+      <a href="/admin/<%= modelName %>/create" target="_blank">
+        New <%= label %>
+      </a>
+    <% } %>
+  </div>
+  <% if (attr.cms && attr.cms.description) { %>
+    <div class="panel-footer"><%- attr.cms.description %></div>
+  <% } %>
+</div>

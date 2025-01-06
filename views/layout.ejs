@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/admin/css/fonts/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="/admin/css/selectize.css">
+    <link rel="stylesheet" href="/admin/css/selectize.default.css">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+
+    <% if (config.styles) { %>
+        <% config.styles.forEach(function(css) { %>
+            <link rel="stylesheet" href="<%= css %>">
+        <% }); %>
+    <% } %>
+
+    <style>
+        html, body {
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/admin">
+                    <img class="logo" alt="<%= config.title %>" src="<%= config.logo_url %>">
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <% modelsArray.forEach(model => { %>
+                    <% if (!model.cms || (model.cms && !model.cms.hide)) { %>
+                        <li class="nav-item">
+                            <a class="nav-link text-capitalize" href="/admin/<%= model.identity %>"><%= _.get(model, "cms.label", model.identity) %></a>
+                        </li>
+                    <% } %>
+                <% }); %>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid body-container">
+        <%- await body -%>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/admin/js/selectize.min.js"></script>
+    <script src="/admin/js/selectize-tree.js"></script>
+    <script src="/admin/js/admin.js?v=1.1"></script>
+
+    <%- blocks.localScripts -%>
+</body>
+</html>

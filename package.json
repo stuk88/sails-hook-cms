@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-cms",
-  "version": "0.0.31",
+  "version": "0.1.32",
   "description": "A simple sails v0.12 admin panel",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "bluebird": "^3.7.2",
+    "ejs": "^3.1.10",
     "fs-extra": "^2.0.0",
     "jade": "^1.11.0",
     "jade-async": "^1.1.8",

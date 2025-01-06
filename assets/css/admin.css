@@ -1,5 +1,22 @@
+
+body>.navbar-default {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+.body-container {
+    padding: 180px 40px 0;
+}
+
 .logo {
     max-height: 35px;
+}
+
+.thead-default th a {
+    white-space: nowrap;
 }
 
 th a.sortedBy {
@@ -24,4 +41,10 @@ th a.sortedBy:after {
 
 th a.sortedBy.desc:after {
     content: '\f0d8';
+}
+
+.table>tbody>tr>td {
+    text-align: center;
+    vertical-align: middle;
+    border-left: 1px solid #efefef;
 }
