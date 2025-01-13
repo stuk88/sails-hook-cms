@@ -151,18 +151,24 @@ module.exports = function (sails) {
         }],
 
         'POST /admin/login': function (req, res, next) {
-          sails.helpers.passwords.hashPassword(req.body.password).exec((err, hashedPassword)=>{
-            if (err) { return proceed(err); }
-              User.findOne({ email: req.body.email, password: hashedPassword, role: 'admin' }).then((user) => {
-                if (!user)
-                  return res.redirect('/admin');
+        
+            User.find({ where: {email: req.body.email, role: 'super_admin'}, limit: 1 }).then(async (user) => {
+              if (!user)
+                return res.redirect('/admin');
 
+              user = user[0]
+              await sails.helpers.passwords.checkPassword(req.body.password, user.password)
+              .then(() => {
                 req.session.userId = user.id;
                 req.session.me = user;
-
+  
                 return res.redirect(req.query.referer || '/admin');
+              })
+              .catch((err) => {
+                return res.redirect('/admin');
               });
-          })
+            });
+          
         },
 
 
