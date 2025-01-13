@@ -17,7 +17,7 @@ module.exports = function (sails) {
     if (req.session && req.session.me && req.session.me.role === 'super_admin') {
       return next();
     }
-    return res.forbidden('You are not authorized to access this resource');
+    return res.redirect('/admin/login');
   };
 
   var injectedVars = {};
