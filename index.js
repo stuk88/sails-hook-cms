@@ -113,6 +113,8 @@ module.exports = function (sails) {
 
           injectedVars.modelsArray = Object.values(sails.models).filter((model) => (!model.junctionTable && !model.meta.junctionTable));
 
+          // Uncomment on package install or update. It will overide the admin theme files from the packge files.
+          return resolve();
 
           require('./lib/bindAssets')(sails, function (err, result) {
             if (err) {
