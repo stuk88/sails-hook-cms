@@ -17,7 +17,7 @@ module.exports = function (sails) {
     if (req.session && req.session.me && req.session.me.role === 'super_admin') {
       return next();
     }
-    return res.redirect('/admin/login');
+    return res.redirect(`/admin/login?referer=${req.baseUrl}`);
   };
 
   var injectedVars = {};
@@ -158,7 +158,7 @@ module.exports = function (sails) {
             req.session.userId = user.id;
             req.session.me = user;
 
-            return res.redirect(req.query.referer);
+            return res.redirect(req.query.referer || '/admin');
           })
         },
 
