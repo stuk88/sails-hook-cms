@@ -13,6 +13,13 @@ var ejsHelpers = require('./lib/ejs-helpers.js');
 
 module.exports = function (sails) {
 
+  const isSuperAdmin = (req, res, next) => {
+    if (req.session && req.session.me && req.session.me.role === 'super_admin') {
+      return next();
+    }
+    return res.forbidden('You are not authorized to access this resource');
+  };
+
   var injectedVars = {};
   injectedVars.sails = sails;
 
@@ -135,11 +142,13 @@ module.exports = function (sails) {
           });
           res.send(html);
         },
-        'GET /admin/logout': function (req, res) {
+        'GET /admin/logout': [
+          isSuperAdmin, // Use the policy here
+          function (req, res) {
           delete req.session.userId;
           delete req.session.me;
           res.redirect('/admin');
-        },
+        }],
 
         'POST /admin/login': function (req, res, next) {
           User.findOne({ email: req.body.email, password: md5(req.body.password), role: 'admin' }).then((user) => {
@@ -154,14 +163,18 @@ module.exports = function (sails) {
         },
 
 
-        'GET /admin': async function (req, res, next) {
+        'GET /admin': [
+          isSuperAdmin, // Use the policy here
+          async function (req, res, next) {
           let html = await renderTemplate('home');
 
           return res.send(html);
-        },
+        }],
 
 
-        'GET /admin/:model': async function (req, res, next) {
+        'GET /admin/:model': [
+          isSuperAdmin, // Use the policy here
+          async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
             let model = sails.models[req.params.model];
             var modelSchema = model._attributes || model.attributes;
@@ -196,10 +209,12 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
 
-        'GET /admin/:model/create': async function (req, res, next) {
+        'GET /admin/:model/create': [
+          isSuperAdmin, // Use the policy here
+          async function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
 
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
@@ -218,9 +233,11 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
-        'GET /admin/:model/edit/:modelId': async function (req, res, next) {
+        'GET /admin/:model/edit/:modelId': [
+          isSuperAdmin, // Use the policy here
+          async function (req, res, next) {
           if (req.params.modelId && req.params.modelId != "false" && req.params.model && sails.models[req.params.model]) {
             let attributes = sails.models[req.params.model]._attributes || sails.models[req.params.model].attributes;
             var modelSchema = _.clone(attributes);
@@ -250,9 +267,11 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
-        'POST /admin/:model/store': function (req, res, next) {
+        'POST /admin/:model/store': [
+          isSuperAdmin, // Use the policy here
+          function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
             fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
@@ -294,9 +313,12 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
-        'GET /admin/:model/duplicate/:modelId': function (req, res, next) {
+        'GET /admin/:model/duplicate/:modelId': 
+        [
+          isSuperAdmin, // Use the policy here
+        function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
 
             sails.models[req.params.model].findOne({ id: req.params.modelId }).then((found_model) => {
@@ -313,9 +335,12 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
-        'POST /admin/:model/update/:modelId': function (req, res, next) {
+        'POST /admin/:model/update/:modelId': 
+        [
+          isSuperAdmin, // Use the policy here
+        function (req, res, next) {
           if (req.params.model && sails.models[req.params.model]) {
             let fields = req.body; //TODO: Clean req.body from empty attrs or _.omit(sourceObj, _.isUndefined) <- allows false, null, 0
 
@@ -360,10 +385,12 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        },
+        }],
 
 
-        'GET /admin/:model/delete/:modelId': function (req, res, next) {
+        'GET /admin/:model/delete/:modelId': [
+          isSuperAdmin, // Use the policy here
+          function (req, res, next) {
           if (req.params.modelId && req.params.model && sails.models[req.params.model]) {
 
             //FindOne model
@@ -374,7 +401,7 @@ module.exports = function (sails) {
           } else {
             return next();
           }
-        }
+        }]
 
       }
     }
