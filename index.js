@@ -137,15 +137,17 @@ module.exports = function (sails) {
         },
         'GET /admin/logout': function (req, res) {
           delete req.session.userId;
+          delete req.session.me;
           res.redirect('/admin');
         },
 
         'POST /admin/login': function (req, res, next) {
-          Users.findOne({ email: req.body.email, password: md5(req.body.password), role: 'admin' }).then((user) => {
+          User.findOne({ email: req.body.email, password: md5(req.body.password), role: 'admin' }).then((user) => {
             if (!user)
               return res.redirect('/admin');
 
             req.session.userId = user.id;
+            req.session.me = user;
 
             return res.redirect(req.query.referer);
           })
