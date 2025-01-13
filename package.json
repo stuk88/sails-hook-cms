@@ -4,7 +4,8 @@
   "description": "A simple sails v0.12 admin panel",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha -R spec",
+    "install": "node ./lib/bindAssets"
   },
   "author": "Stas Arshanski <stas.arshanski@gmail.com>",
   "license": "MIT",
