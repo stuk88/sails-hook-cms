@@ -126,5 +126,5 @@
 })(jQuery);
 
 jQuery(document).ready(function($) {
-    $('textarea[name="configDataJson"]').kvJsonInput();
+    $('textarea[data-type="json"]').kvJsonInput();
 });
