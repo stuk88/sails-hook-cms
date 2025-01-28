@@ -152,6 +152,9 @@ module.exports = function (sails) {
 
         'POST /admin/login': function (req, res, next) {
         
+          if (!req.body.email || !req.body.password)
+            return res.redirect('/admin');
+
             User.find({ where: {email: req.body.email, role: 'super_admin'}, limit: 1 }).then(async (user) => {
               if (!user)
                 return res.redirect('/admin');
