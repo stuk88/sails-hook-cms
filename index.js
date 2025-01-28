@@ -366,14 +366,16 @@ module.exports = function (sails) {
               }
 
 
+
+
               if (attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);
 
-              if (_.get(sails,`models[${req.params.model}]._attributes[${key}].collection`, false) && !Array.isArray(fields[key])) {
-                if (_.get(sails,`config.connections[${_.get(sails,`models[${req.params.model}].connection`)}].adapter`, false) == 'sails-mysql')
-                  fields[key] = fields[key] == "" ? [] : [parseInt(fields[key])];
+              if (attributes[key].collection && !Array.isArray(fields[key])) {
+                if (_.get(sails,`config.datastores[${_.get(sails,`models[${req.params.model}].datastore`)}].adapter`, false) == 'sails-mysql')
+                  fields[key] = fields[key] == "" ? [] : fields[key].split(",").map(parseInt);
                 else
-                  fields[key] = [fields[key]];
+                  fields[key] = fields[key].split(",");
               }
 
               if (attributes[key].type == "date")
