@@ -17,6 +17,9 @@
   case 'textarea':
     %><%- include('./textarea', { name: name, attr: attr, value: value }) %><%
     break;
+  case 'json':
+    %><%- include('./json', { name: name, attr: attr, value: value }) %><%
+    break;
   case 'combo':
     %><%- include('./combo', { name: name, attr: attr, options: options, value: value }) %><%
     break;
