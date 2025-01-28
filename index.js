@@ -3,10 +3,9 @@ var jade = require('jade');
 var jadeAsync = require('jade-async');
 var _ = require('lodash');
 var path = require('path');
-var md5 = require('md5');
 var moment = require('moment');
 var pkg = require('./package.json')
-var ejs = require('ejs');
+const utils = require('./lib/utils');
 
 var jadeHelpers = require('./lib/jade-helpers.js');
 var ejsHelpers = require('./lib/ejs-helpers.js');
@@ -267,6 +266,7 @@ module.exports = function (sails) {
             q.then(async function (model) {
 
               let html = await renderTemplate('model.edit', {
+                hasJsonEditor: utils.hasJsonEditor(modelSchema),
                 modelName: req.params.model,
                 modelSchema: buildModelSchema(req.params.model, modelSchema),
                 model: model
@@ -364,9 +364,6 @@ module.exports = function (sails) {
                 delete fields[key];
                 return;
               }
-
-
-
 
               if (attributes[key].type == "objectid")
                 fields[key] = ObjectId(value);

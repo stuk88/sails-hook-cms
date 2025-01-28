@@ -1,0 +1,22 @@
+<div class="panel panel-default form-group">
+    <div class="panel-body">
+      <label class="control-label capitalize" for="<%= name %>">
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
+      </label>
+      <div class="form-control">
+    
+      <textarea
+        data-type="json"
+        name="<%= name %>"
+        id="<%= name %>"
+        placeholder="<%= attr.default || '' %>"
+        <%= attr.required ? 'required' : '' %>
+        <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
+      ><%= value ? value : '' %></textarea>
+        </div>
+    </div>
+    <% if (attr.cms && attr.cms.description) { %>
+      <div class="panel-footer"><%- attr.cms.description %></div>
+    <% } %>
+  </div>
+  
