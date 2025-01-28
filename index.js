@@ -40,6 +40,7 @@ module.exports = function (sails) {
 
   injectedVars._ = _;
   injectedVars.moment = moment;
+  injectedVars.hasJsonEditor = false;
   var extendInjectedVars = (locals) => _.assign(injectedVars, locals);
   
   const camel2title = (camelCase) => camelCase
