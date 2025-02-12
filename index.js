@@ -16,7 +16,7 @@ module.exports = function (sails) {
     if (req.session && req.session.me && req.session.me.role === 'super_admin') {
       return next();
     }
-    return res.redirect(`/admin/login?referer=${req.baseUrl}`);
+    return res.redirect(`/admin/login?referer=${req.path}`);
   };
 
   var injectedVars = {};
