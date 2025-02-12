@@ -1,9 +1,9 @@
-<div class="panel panel-default checkbox form-group">
+<div class="panel panel-default form-group">
     <div class="panel-body">
       <label class="control-label" for="<%= name %>">
-        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>
+        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
       </label>
-      
+
       <div class="input-group">
         <input type="radio"
             name="<%= name %>"
@@ -12,7 +12,7 @@
             <%= value ? 'checked' : '' %>
             <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
           />
-          On
+          Yes
       </div>
 
       <div class="input-group">
@@ -23,7 +23,7 @@
             <%= (value === 'false') ? 'checked' : '' %>
             <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
           />
-          Off
+          No
       </div>
     </div>
     <% if (attr.cms && attr.cms.description) { %>
