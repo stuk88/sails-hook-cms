@@ -1,34 +1,24 @@
 <div class="panel panel-default form-group">
-    <div class="panel-body">
-      <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
-      <div class="input-group">
-        <span class="input-group-addon">
-        <input type="radio"
-            name="<%= name %>"
-            value="true"
-            id="<%= name %>"
-            <%= value ? 'checked' : '' %>
-            <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
-          />
-          </span>
-          <label class="control-label" for="<%= name %>">Yes</label>
-      </div>
+  <div class="panel-body">
+    <%= (attr.cms && attr.cms.label) || name %>
+      <%= attr.required ? '*' : '' %>:
+        <div class="input-group">
+          <input type="radio" class="form-control" name="<%= name %>" value="true" id="<%= name %>" <%= value ? 'checked' : '' %>
+          <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %> />
+            <span class="input-group-addon">
+              <label class="control-label" for="<%= name %>">Yes</label>
+            </span>
+        </div>
 
-      <div class="input-group">
-        <span class="input-group-addon">
-          <input type="radio"
-          name="<%= name %>"
-          value="false"
-          id="<%= name %>-false"
-          <%= (value === 'false') ? 'checked' : '' %>
-          <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
-        />
-        </span>
-        <label class="control-label" for="<%= name %>-false">No</label>      
-      </div>
-    </div>
-    <% if (attr.cms && attr.cms.description) { %>
-      <div class="panel-footer"><%- attr.cms.description %></div>
-    <% } %>
+        <div class="input-group">
+          <input type="radio" class="form-control" name="<%= name %>" value="false" id="<%= name %>-false" <%= (value === 'false') ? 'checked' : '' %>
+          <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %> />
+            <span class="input-group-addon">
+              <label class="control-label" for="<%= name %>-false">No</label>
+            </span>
+        </div>
   </div>
-  
+  <% if (attr.cms && attr.cms.description) { %>
+    <div class="panel-footer"><%- attr.cms.description %></div>
+    <% } %>
+</div>
