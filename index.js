@@ -165,7 +165,7 @@ module.exports = function (sails) {
                 req.session.userId = user.id;
                 req.session.me = user;
   
-                return res.redirect(req.query.referer || '/admin');
+                return res.redirect(req.body.referer || '/admin');
               })
               .catch((err) => {
                 return res.redirect('/admin');
