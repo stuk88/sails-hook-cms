@@ -1,10 +1,8 @@
 <div class="panel panel-default form-group">
     <div class="panel-body">
-      <label class="control-label" for="<%= name %>">
-        <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
-      </label>
-
+      <%= (attr.cms && attr.cms.label) || name %><%= attr.required ? '*' : '' %>:
       <div class="input-group">
+        <span class="input-group-addon">
         <input type="radio"
             name="<%= name %>"
             value="true"
@@ -12,18 +10,21 @@
             <%= value ? 'checked' : '' %>
             <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
           />
-          Yes
+          </span>
+          <label class="control-label" for="<%= name %>">Yes</label>
       </div>
 
       <div class="input-group">
-        <input type="radio"
-            name="<%= name %>"
-            value="false"
-            id="<%= name %>"
-            <%= (value === 'false') ? 'checked' : '' %>
-            <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
-          />
-          No
+        <span class="input-group-addon">
+          <input type="radio"
+          name="<%= name %>"
+          value="false"
+          id="<%= name %>-false"
+          <%= (value === 'false') ? 'checked' : '' %>
+          <%= attr.cms && attr.cms.disabled ? 'disabled' : '' %>
+        />
+        </span>
+        <label class="control-label" for="<%= name %>-false">No</label>      
       </div>
     </div>
     <% if (attr.cms && attr.cms.description) { %>
