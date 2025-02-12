@@ -4,11 +4,11 @@
       <%= attr.required ? '*' : '' %>:
 
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn btn-primary active">
-            <input type="radio" name="<%= name %>" value="true" autocomplete="off"  <%= value ? 'checked' : '' %>> Yes
+        <label class="btn btn-primary <%= value && 'active' %>">
+            <input type="radio" name="<%= name %>" value="true" autocomplete="off"  <%= value && 'checked' %>> Yes
         </label>
-        <label class="btn btn-primary">
-            <input type="radio" name="<%= name %>" value="false" autocomplete="off" <%= (value === 'false') ? 'checked' : '' %>> No
+        <label class="btn btn-primary <%= !value && 'active' %>">
+            <input type="radio" name="<%= name %>" value="false" autocomplete="off" <%= !value && 'checked' %>> No
         </label>
       </div>
   </div>
