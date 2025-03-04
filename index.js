@@ -269,6 +269,9 @@ module.exports = function (sails) {
 
             q.then(async function (model) {
 
+              if (!model)
+                return res.status(404);
+
               let html = await renderTemplate('model.edit', {
                 hasJsonEditor: utils.hasJsonEditor(modelSchema),
                 modelName: req.params.model,
