@@ -179,8 +179,9 @@ module.exports = function (sails) {
                 req.session.userId = user.id;
                 req.session.me = user;
                 sails.log.verbose('Session saved for user:', req.body.email);
-  
-                return res.redirect(req.body.referer || '/admin');
+                req.session.save(function() {
+                  return res.redirect(req.body.referer || '/admin');
+                });
               })
               .catch((err) => {
                 sails.log.warn('Failed login attempt for user:', req.body.email);
