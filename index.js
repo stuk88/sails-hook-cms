@@ -13,9 +13,20 @@ var ejsHelpers = require('./lib/ejs-helpers.js');
 module.exports = function (sails) {
 
   const isSuperAdmin = (req, res, next) => {
+    sails.log('isSuperAdmin check:', {
+      path: req.path,
+      hasSession: !!req.session,
+      hasUser: !!(req.session && req.session.me),
+      userRole: req.session && req.session.me ? req.session.me.role : null,
+      userId: req.session && req.session.me ? req.session.me.id : null
+    });
+    
     if (req.session && req.session.me && req.session.me.role === 'super_admin') {
+      sails.log.verbose('isSuperAdmin: Access granted');
       return next();
     }
+    
+    sails.log('isSuperAdmin: Access denied, redirecting to login');
     return res.redirect(`/admin/login?referer=${req.path}`);
   };
 
