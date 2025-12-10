@@ -167,18 +167,23 @@ module.exports = function (sails) {
             return res.redirect('/admin');
 
             User.find({ where: {email: req.body.email, role: 'super_admin'}, limit: 1 }).then(async (user) => {
-              if (!user)
+              if (!user) {
+                sails.log.warn('Login attempt for non-existent user:', req.body.email);
                 return res.redirect('/admin');
+              }
 
               user = user[0]
+              sails.log.verbose('User found for login:', req.body.email);
               await sails.helpers.passwords.checkPassword(req.body.password, user.password)
               .then(() => {
                 req.session.userId = user.id;
                 req.session.me = user;
+                sails.log.verbose('Session saved for user:', req.body.email);
   
                 return res.redirect(req.body.referer || '/admin');
               })
               .catch((err) => {
+                sails.log.warn('Failed login attempt for user:', req.body.email);
                 return res.redirect('/admin');
               });
             });
