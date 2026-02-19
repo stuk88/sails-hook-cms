@@ -24,9 +24,39 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default">
+    <!-- Sidebar Drawer -->
+    <div class="sidebar-drawer" id="sidebarDrawer">
+        <div class="sidebar-header clearfix">
+            <a href="/admin">
+                <img class="logo pull-left" alt="<%= config.title %>" src="<%= config.logo_url %>">
+            </a>
+            <button type="button" class="close pull-right" id="sidebarCloseBtn" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <ul class="nav nav-pills nav-stacked sidebar-nav">
+            <% modelsArray.forEach(model => { %>
+                <% if (!model.cms || (model.cms && !model.cms.hide)) { %>
+                    <li>
+                        <a class="text-capitalize" href="/admin/<%= model.identity %>">
+                            <i class="fas fa-database fa-fw"></i>
+                            <%= _.get(model, "cms.label", model.identity) %>
+                        </a>
+                    </li>
+                <% } %>
+            <% }); %>
+        </ul>
+    </div>
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle sidebar-toggle" id="sidebarToggleBtn">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="/admin">
                     <img class="logo" alt="<%= config.title %>" src="<%= config.logo_url %>">
                 </a>

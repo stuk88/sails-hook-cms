@@ -3,6 +3,30 @@ if(typeof Evemit === 'function') {
 }
 
 $(document).ready(function(){
+    // Sidebar drawer toggle (uses Bootstrap modal-backdrop)
+    var $sidebar = $('#sidebarDrawer');
+    var $backdrop = null;
+
+    function openSidebar() {
+        $sidebar.addClass('open');
+        $backdrop = $('<div class="modal-backdrop fade in sidebar-backdrop"></div>').appendTo('body');
+        $backdrop.on('click', closeSidebar);
+    }
+
+    function closeSidebar() {
+        $sidebar.removeClass('open');
+        if ($backdrop) {
+            $backdrop.remove();
+            $backdrop = null;
+        }
+    }
+
+    $('#sidebarToggleBtn').on('click', openSidebar);
+    $('#sidebarCloseBtn').on('click', closeSidebar);
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
     $('[date-time]').datetimepicker({format:'YYYY-MM-DD hh:mm:ss'});
     $('[date]').datetimepicker({
         format:'YYYY-MM-DD'

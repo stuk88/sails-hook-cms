@@ -1,20 +1,94 @@
 
-body>.navbar-default {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 999;
-}
-
+/* ── Top Navbar ── */
 .body-container {
-    padding: 180px 40px 0;
+    padding-top: 70px;
 }
 
 .logo {
     max-height: 35px;
 }
 
+/* ── Sidebar Toggle (always visible) ── */
+.navbar-toggle.sidebar-toggle {
+    display: block;
+    float: left;
+    margin-left: 15px;
+}
+
+/* ── Sidebar Drawer ── */
+.sidebar-drawer {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background: #2c3e50;
+    z-index: 1050;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+}
+
+.sidebar-drawer.open {
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+/* ── Sidebar Header ── */
+.sidebar-header {
+    padding: 14px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header .logo {
+    max-height: 30px;
+    filter: brightness(10);
+}
+
+.sidebar-header .close {
+    color: rgba(255,255,255,0.7);
+    opacity: 1;
+    font-size: 24px;
+    margin-top: 2px;
+    text-shadow: none;
+}
+
+.sidebar-header .close:hover {
+    color: #fff;
+}
+
+/* ── Sidebar Nav (Bootstrap nav-pills nav-stacked) ── */
+.sidebar-nav > li > a {
+    color: rgba(255,255,255,0.8);
+    border-radius: 0;
+    padding: 12px 20px;
+    font-size: 14px;
+}
+
+.sidebar-nav > li > a:hover,
+.sidebar-nav > li > a:focus {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.sidebar-nav > li.active > a,
+.sidebar-nav > li.active > a:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.sidebar-nav > li > a > .fa-fw {
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+/* ── Sidebar Backdrop (reuses Bootstrap .modal-backdrop) ── */
+.sidebar-backdrop {
+    z-index: 1040;
+}
+
+/* ── Table Styles ── */
 .thead-default th a {
     white-space: nowrap;
 }
