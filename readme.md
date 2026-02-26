@@ -114,6 +114,30 @@ module.exports = {
 };
 ```
 
+## Assets & Overwriting
+
+When installed, the hook copies its views and assets into your app's `views/admin/` and `assets/admin/` directories. By default, **existing files are not overwritten** — this protects any local customizations you've made.
+
+### Force copy (overwrite all files)
+
+To force-overwrite with the latest version from the package:
+
+```bash
+cd node_modules/sails-hook-cms && npm run force-copy
+```
+
+### Auto-overwrite on install
+
+If you want every `npm install` / `npm update` to always overwrite with the latest files, add this to your `config/misc.js`:
+
+```js
+module.exports = {
+  cms: {
+    overwrite: true
+  }
+}
+```
+
 ## You can help!
 * This hook needs to load the heavy form fields from ajax (model, collection), and generate them server side. That will lower load times for the hook and will allow to use pug with jade-async (Currently we have some major issues because Jade is DEPRECATED).
 
