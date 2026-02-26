@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec",
-    "postinstall": "node ./lib/bindAssets"
+    "postinstall": "node ./lib/bindAssets",
+    "force-copy": "node ./lib/forceCopy"
   },
   "author": "Stas Arshanski <stas.arshanski@gmail.com>",
   "license": "MIT",
